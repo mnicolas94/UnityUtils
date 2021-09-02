@@ -14,10 +14,10 @@ namespace Utils.Runtime.Extensions
             float width = xMax - xMin;
             float height = yMax - yMin;
             
-            float targetXMin = currentBounds.xMin;
-            float targetXMax = currentBounds.xMax;
-            float targetYMin = currentBounds.yMin;
-            float targetYMax = currentBounds.yMax;
+            float targetXMin = targetBounds.xMin;
+            float targetXMax = targetBounds.xMax;
+            float targetYMin = targetBounds.yMin;
+            float targetYMax = targetBounds.yMax;
             float targetWidth = targetXMax - targetXMin;
             float targetHeight = targetYMax - targetYMin;
 
