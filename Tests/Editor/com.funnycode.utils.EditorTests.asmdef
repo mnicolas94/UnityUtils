@@ -1,0 +1,11 @@
+{
+  "name": "com.funnycode.utils.Editor.Tests",
+  "references": [
+    "com.funnycode.utils"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": []
+}

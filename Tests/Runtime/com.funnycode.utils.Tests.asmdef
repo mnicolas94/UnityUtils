@@ -1,0 +1,11 @@
+{
+  "name": "com.funnycode.utils.Tests",
+  "references": [
+    "Unity.com.funnycode.utils"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": []
+}

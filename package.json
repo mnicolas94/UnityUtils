@@ -1,0 +1,22 @@
+{
+  "name": "com.funnycode.utils",
+  "version": "0.0.0",
+  "displayName": "Utils",
+  "description": "Scripts útiles que puedo reutilizar",
+  "unity": "",
+  "unityRelease": "",
+  "dependencies": { },
+  "keywords": [
+    
+  ],
+  "author": {
+	  "name": "FunnyCode",
+	  "email": "",
+	  "url": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mnicolas94/UnityUtils.git"
+  },
+  "license": "MIT"
+}
