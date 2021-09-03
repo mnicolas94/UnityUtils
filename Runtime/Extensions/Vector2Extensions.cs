@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Numerics;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
 
 namespace Utils.Runtime.Extensions
 {
@@ -41,7 +43,16 @@ namespace Utils.Runtime.Extensions
             var mirrored = new Vector2(mirroredX, vector.y);
             return mirrored;
         }
-        
+
+        public static bool IsInsideRect(this Vector2 vector, Rect rect)
+        {
+            bool left = vector.x >= rect.xMin;
+            bool right = vector.x <= rect.xMax;
+            bool bottom = vector.y >= rect.yMin;
+            bool top = vector.y <= rect.yMax;
+            return left && right && bottom && top;
+        }
+
         /// <summary>
         /// Devuelve un vector ortogonal al pasado por parámetro y de magnitud igual a 1.
         /// </summary>
