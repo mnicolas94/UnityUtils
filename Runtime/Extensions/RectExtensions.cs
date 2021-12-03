@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utils.Runtime.Extensions
+namespace Utils.Extensions
 {
     public static class RectExtensions
     {

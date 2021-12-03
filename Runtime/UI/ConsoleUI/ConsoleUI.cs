@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Utils.Runtime.UI.ConsoleUI
+namespace Utils.UI.ConsoleUI
 {
     public class ConsoleUI : MonoBehaviour
     {

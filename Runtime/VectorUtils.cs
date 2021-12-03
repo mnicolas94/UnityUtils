@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utils.Runtime
+namespace Utils
 {
     public static class VectorUtils
     {

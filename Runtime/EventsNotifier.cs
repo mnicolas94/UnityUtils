@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Utils.Runtime
+namespace Utils
 {
     public class EventsNotifier : MonoBehaviour,
         IPointerEnterHandler, IPointerDownHandler, IPointerClickHandler, IPointerUpHandler, IPointerExitHandler,

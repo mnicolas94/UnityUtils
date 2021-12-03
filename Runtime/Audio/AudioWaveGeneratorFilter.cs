@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Utils.Runtime.Audio
+namespace Utils.Audio
 {
     public class AudioWaveGeneratorFilter : MonoBehaviour
     {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Numerics;
-using UnityEngine;
+﻿using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
-namespace Utils.Runtime.Extensions
+namespace Utils.Extensions
 {
     public static class Vector2Extensions
     {

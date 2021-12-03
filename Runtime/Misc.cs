@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Utils.Runtime
+namespace Utils
 {
     public static class Misc
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace Utils.Runtime.Extensions
+namespace Utils.Extensions
 {
     public static class ComponentExtensions
     {

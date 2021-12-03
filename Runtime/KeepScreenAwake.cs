@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Utils.Runtime
+namespace Utils
 {
     public class KeepScreenAwake : MonoBehaviour
     {

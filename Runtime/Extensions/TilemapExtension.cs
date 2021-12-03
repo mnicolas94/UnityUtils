@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-namespace Utils
+namespace Utils.Extensions
 {
     public static class TilemapExtension
     {

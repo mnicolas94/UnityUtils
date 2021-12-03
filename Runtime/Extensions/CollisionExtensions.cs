@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
-namespace Utils.Runtime.Extensions
+namespace Utils.Extensions
 {
     public static class CollisionExtensions
     {
