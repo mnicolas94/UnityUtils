@@ -1,6 +1,6 @@
 {
-  "name": "com.funnycode.utils",
-  "version": "0.2.0",
+  "name": "com.mnicolas.utils",
+  "version": "0.2.1",
   "displayName": "Utils",
   "description": "Scripts útiles que puedo reutilizar",
   "unity": "",
@@ -10,7 +10,7 @@
     
   ],
   "author": {
-	  "name": "FunnyCode",
+	  "name": "Miguel Nicolás-Díaz",
 	  "email": "",
 	  "url": ""
   },
