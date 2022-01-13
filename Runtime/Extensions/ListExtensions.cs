@@ -5,14 +5,14 @@ namespace Utils.Extensions
 {
     public static class ListExtensions
     {
-        public static T GetRandom<T>(this List<T> list)
+        public static T GetRandom<T>(this IList<T> list)
         {
             int count = list.Count;
             int index = Random.Range(0, count);
             return list[index];
         }
 
-        public static void AddRangeIfNotExists<T>(this List<T> list, List<T> range)
+        public static void AddRangeIfNotExists<T>(this List<T> list, IList<T> range)
         {
             for (int i = 0; i < range.Count; i++)
             {
