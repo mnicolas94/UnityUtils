@@ -1,6 +1,9 @@
 {
-    "name": "com.funnycode.utils.Editor",
-    "references": [],
+    "name": "com.facticus.utils.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c35c6d9084ba1a541868fbd8c50a585a"
+    ],
     "includePlatforms": [
         "Editor"
     ],
