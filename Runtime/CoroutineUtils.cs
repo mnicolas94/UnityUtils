@@ -15,14 +15,35 @@ namespace Utils
             }
         }
         
-        public static IEnumerator ActionCoroutine(Action action, bool afterFrame=true)
+        public static IEnumerator WaitAll(MonoBehaviour owner, List<IEnumerator> coroutines)
         {
-            if (afterFrame)
+            int running = coroutines.Count;
+            foreach (var coroutine in coroutines)
+            {
+                owner.StartCoroutine(CoroutineSequence(new List<IEnumerator>
+                {
+                    coroutine,
+                    ActionCoroutine(() => running--, false, false)
+                }));
+            }
+
+            while (running > 0)
+            {
+                yield return null;
+            }
+        }
+        
+        public static IEnumerator ActionCoroutine(
+            Action action,
+            bool waitPreviousFrame=true,
+            bool waitNextFrame=true)
+        {
+            if (waitPreviousFrame)
                 yield return null;
         
             action?.Invoke();
             
-            if (!afterFrame)
+            if (waitNextFrame)
                 yield return null;
         }
 
