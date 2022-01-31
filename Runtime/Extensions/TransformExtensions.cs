@@ -10,5 +10,22 @@ namespace Utils.Extensions
             target.z = pos.z;
             transform.up = target - pos;
         }
+        
+        public static void ClearChildren(this Transform transform)
+        {
+            while (transform.childCount > 0)
+            {
+                var child = transform.GetChild(0);
+                if (Application.isPlaying)
+                {
+                    child.SetParent(null); // to avoid infinite loop
+                    Object.Destroy(child.gameObject);
+                }
+                else
+                {
+                    Object.DestroyImmediate(child.gameObject);
+                }
+            }
+        }
     }
 }
