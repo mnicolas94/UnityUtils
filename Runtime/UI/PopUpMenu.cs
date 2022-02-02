@@ -56,11 +56,11 @@ namespace Utils.UI
         }
 
         [ContextMenu("ShowPanel")]
-        public void ShowPanel()
+        public bool ShowPanel()
         {
             bool alreadyShowing = menu.gameObject.activeSelf;
             if (_moving || alreadyShowing)
-                return;
+                return false;
             menu.gameObject.SetActive(true);
             IsShowing = true;
 
@@ -74,14 +74,16 @@ namespace Utils.UI
                     eventShowed?.Invoke();
                 }
             ));
+
+            return true;
         }
         
         [ContextMenu("HidePanel")]
-        public void HidePanel()
+        public bool HidePanel()
         {
             bool alreadyHidden = !menu.gameObject.activeSelf;
             if (_moving || alreadyHidden)
-                return;
+                return false;
             
             eventBeforeHide?.Invoke();
             StartCoroutine(MoveToTarget(
@@ -93,6 +95,8 @@ namespace Utils.UI
                     eventHidden?.Invoke();
                 }
             ));
+
+            return true;
         }
 
         private void HideImmediately()
