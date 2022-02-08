@@ -24,15 +24,22 @@ namespace Utils
             }
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
-            if (_instance != null) return;
+//            if (_instance != null) return;
+            Debug.Log($"SOS.OnEnable: {name}; null: {_instance == null}");
             _instance = (T) this;
 #if UNITY_EDITOR
             AddToPreloadedAssets(_instance);
 #endif
         }
-        
+
+        private void OnDisable()
+        {
+            Debug.Log($"SOS.OnDisable: {name}; null: {_instance == null}");
+            _instance = null;
+        }
+
         private static bool IsNull => _instance == null;
         
 #if UNITY_EDITOR
@@ -55,7 +62,7 @@ namespace Utils
             return asset;
         }
         
-        public static void AddToPreloadedAssets(Object asset)
+        private static void AddToPreloadedAssets(Object asset)
         {
             // add to preloaded assets if not yet
             var preloadedAssets = PlayerSettings.GetPreloadedAssets().ToList();
