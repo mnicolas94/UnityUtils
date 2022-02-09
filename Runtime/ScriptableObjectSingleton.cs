@@ -26,8 +26,6 @@ namespace Utils
 
         private void OnEnable()
         {
-//            if (_instance != null) return;
-            Debug.Log($"SOS.OnEnable: {name}; null: {_instance == null}");
             _instance = (T) this;
 #if UNITY_EDITOR
             AddToPreloadedAssets(_instance);
@@ -36,7 +34,6 @@ namespace Utils
 
         private void OnDisable()
         {
-            Debug.Log($"SOS.OnDisable: {name}; null: {_instance == null}");
             _instance = null;
         }
 
@@ -53,7 +50,7 @@ namespace Utils
             }
             else if (assets.Length > 1)
             {
-                Debug.LogWarning($"Multiple instances of singleton type {typeof(T)} found");
+                Debug.LogWarning($"!!! Multiple instances of singleton type {typeof(T)} found");
             }
 
             string assetPath = AssetDatabase.GUIDToAssetPath(assets[0]);
