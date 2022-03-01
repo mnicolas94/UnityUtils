@@ -17,8 +17,8 @@ namespace Utils
         
         public static IEnumerator ActionCoroutine(
             Action action,
-            bool waitPreviousFrame=true,
-            bool waitNextFrame=true)
+            bool waitPreviousFrame=false,
+            bool waitNextFrame=false)
         {
             if (waitPreviousFrame)
                 yield return null;
