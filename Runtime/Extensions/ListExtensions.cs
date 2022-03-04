@@ -11,6 +11,13 @@ namespace Utils.Extensions
             int index = Random.Range(0, count);
             return list[index];
         }
+        
+        public static T PopRandom<T>(this IList<T> list)
+        {
+            var random = list.GetRandom();
+            list.Remove(random);
+            return random;
+        }
 
         public static void AddRangeIfNotExists<T>(this List<T> list, IList<T> range)
         {
