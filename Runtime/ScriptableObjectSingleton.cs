@@ -23,6 +23,8 @@ namespace Utils
                 return _instance;
             }
         }
+        
+        private static bool IsNull => _instance == null;
 
         private void OnEnable()
         {
@@ -30,14 +32,18 @@ namespace Utils
 #if UNITY_EDITOR
             AddToPreloadedAssets(_instance);
 #endif
+            OnEnableCallback();
         }
 
         private void OnDisable()
         {
             _instance = null;
+            OnDisableCallback();
         }
+        
+        protected virtual void OnEnableCallback(){}
+        protected virtual void OnDisableCallback(){}
 
-        private static bool IsNull => _instance == null;
         
 #if UNITY_EDITOR
         private static T Load()
