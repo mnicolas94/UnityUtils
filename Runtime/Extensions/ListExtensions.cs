@@ -19,11 +19,10 @@ namespace Utils.Extensions
             return random;
         }
 
-        public static void AddRangeIfNotExists<T>(this List<T> list, IList<T> range)
+        public static void AddRangeIfNotExists<T>(this List<T> list, IEnumerable<T> range)
         {
-            for (int i = 0; i < range.Count; i++)
+            foreach (var t in range)
             {
-                var t = range[i];
                 if (!list.Contains(t))
                 {
                     list.Add(t);
