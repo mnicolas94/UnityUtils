@@ -1,7 +1,7 @@
-﻿﻿using System;
+﻿using System;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Utils
 {
     [Serializable]
     public struct SerializableTimeSpan

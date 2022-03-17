@@ -1,5 +1,4 @@
-﻿using DefaultNamespace;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Utils.Editor
