@@ -18,7 +18,6 @@ namespace Utils.Editor
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            Debug.Log("as");
             if (GetTargetObjectOfProperty(property) is TypeReference target)
             {
                 var baseType = target.GetBaseType();
