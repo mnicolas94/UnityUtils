@@ -27,6 +27,7 @@ namespace Utils
             }
         }
 
+#if UNITY_EDITOR
         public static List<Type> GetSubclassTypes(Type baseType)
         {
             var types = TypeCache.GetTypesDerivedFrom(baseType).Where(t => !t.IsInterface &&
@@ -43,5 +44,6 @@ namespace Utils
                                                                            t.Name == subClassName);
             return type;
         }
+#endif
     }
 }
