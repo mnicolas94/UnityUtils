@@ -22,44 +22,40 @@ namespace Utils.Editor
             {
                 var baseType = target.GetBaseType();
                 var tp = target.Type;
-                EditorGUI.BeginChangeCheck();
-                tp = TypeDropDown(position, label, baseType, tp);
-                SetTypeToTypeReference(property, tp);
+                
+                var rect = EditorGUI.PrefixLabel(position, label);
+                TypeDropDown(rect, label, target, baseType, tp);
             }
             
             EditorGUI.EndProperty();
         }
 
-        private Type TypeDropDown(Rect position, GUIContent label, Type baseType, Type currentType)
+        private void TypeDropDown(Rect position, GUIContent label, TypeReference property, Type baseType, Type currentType)
         {
             string text = currentType == null ? "Null" : currentType.Name;
             bool pressed = EditorGUI.DropdownButton(position, new GUIContent(text), FocusType.Keyboard);
             if (pressed)
             {
                 var childTypes = TypeUtil.GetSubclassTypes(baseType);
-                int currentIndex = childTypes.IndexOf(currentType);
-                currentIndex = Math.Max(0, currentIndex);  // select first type if none is selected
                 var typesNames = childTypes.ConvertAll(tp => tp.Name).ToArray();
                 
                 var menu = new GenericMenu();
-                int selected = currentIndex;
-                
                 for (int i = 0; i < typesNames.Length; i++)
                 {
                     string typeName = typesNames[i];
                     menu.AddItem(
                         new GUIContent(typeName),
                         typeName == text,
-                        index => selected = (int) index,
+                        index =>
+                        {
+                            var type = childTypes[(int) index];
+                            property.Type = type;
+                        },
                         i
                         );
                 }
                 menu.ShowAsContext();
-                
-                return childTypes[selected];
             }
-
-            return currentType;
         }
         
         private void SetTypeToTypeReference(SerializedProperty property, Type tp)
