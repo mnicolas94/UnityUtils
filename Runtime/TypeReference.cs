@@ -46,7 +46,7 @@ namespace Utils
             }
         }
 
-        public Type UnHashType(string hash, Type baseType)
+        public static Type UnHashType(string hash, Type baseType)
         {
             if (!string.IsNullOrEmpty(hash))
             {

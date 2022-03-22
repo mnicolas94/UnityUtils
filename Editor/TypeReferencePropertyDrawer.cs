@@ -21,16 +21,17 @@ namespace Utils.Editor
             if (GetTargetObjectOfProperty(property) is TypeReference target)
             {
                 var baseType = target.GetBaseType();
-                var tp = target.Type;
+                var tp = GetTypeFromTypeReference(property, baseType);
+                Debug.Log(tp.Name);
                 
                 var rect = EditorGUI.PrefixLabel(position, label);
-                TypeDropDown(rect, label, target, baseType, tp);
+                TypeDropDown(rect, label, property, baseType, tp);
             }
             
             EditorGUI.EndProperty();
         }
 
-        private void TypeDropDown(Rect position, GUIContent label, TypeReference property, Type baseType, Type currentType)
+        private void TypeDropDown(Rect position, GUIContent label, SerializedProperty property, Type baseType, Type currentType)
         {
             string text = currentType == null ? "Null" : currentType.Name;
             bool pressed = EditorGUI.DropdownButton(position, new GUIContent(text), FocusType.Keyboard);
@@ -49,7 +50,7 @@ namespace Utils.Editor
                         index =>
                         {
                             var type = childTypes[(int) index];
-                            property.Type = type;
+                            SetTypeToTypeReference(property, type);
                         },
                         i
                         );
@@ -58,11 +59,19 @@ namespace Utils.Editor
             }
         }
         
+        private Type GetTypeFromTypeReference(SerializedProperty property, Type baseType)
+        {
+            var hashProp = property?.FindPropertyRelative(PROP_TYPEHASH);
+            if (hashProp == null) return null;
+            return TypeReference.UnHashType(hashProp.stringValue, baseType);
+        }
+        
         private void SetTypeToTypeReference(SerializedProperty property, Type tp)
         {
             var hashProp = property?.FindPropertyRelative(PROP_TYPEHASH);
             if (hashProp == null) return;
             hashProp.stringValue = TypeReference.HashType(tp);
+            property.serializedObject.ApplyModifiedProperties();
         }
         
         public static object GetTargetObjectOfProperty(SerializedProperty prop)
