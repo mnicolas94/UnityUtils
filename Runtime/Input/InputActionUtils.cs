@@ -23,7 +23,9 @@ namespace Utils.Input
         public static InputAction GetPointAction()
         {
             var inputAction = new InputAction("Point", InputActionType.Value);
-            AddPointerBindings(inputAction);
+            inputAction.AddBinding("<Mouse>/position", groups: "Keyboard&Mouse");
+            inputAction.AddBinding("<Pen>/position", groups: "Keyboard&Mouse");
+            inputAction.AddBinding("<Touchscreen>/touch*/position", groups: "Touch");
 
             return inputAction;
         }
