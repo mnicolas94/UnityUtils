@@ -22,7 +22,6 @@ namespace Utils.Editor
             {
                 var baseType = target.GetBaseType();
                 var tp = GetTypeFromTypeReference(property, baseType);
-                Debug.Log(tp.Name);
                 
                 var rect = EditorGUI.PrefixLabel(position, label);
                 TypeDropDown(rect, label, property, baseType, tp);
