@@ -6,7 +6,7 @@ namespace Utils.Input
     {
         public static InputAction GetTapAction()
         {
-            var inputAction = new InputAction("Tap", InputActionType.Button, interactions: "Tap");
+            var inputAction = new InputAction("Tap", InputActionType.PassThrough, interactions: "Tap");
             AddPointerBindings(inputAction);
 
             return inputAction;
@@ -14,7 +14,7 @@ namespace Utils.Input
         
         public static InputAction GetClickAction()
         {
-            var inputAction = new InputAction("Click", InputActionType.Button);
+            var inputAction = new InputAction("Click", InputActionType.PassThrough);
             AddPointerBindings(inputAction);
 
             return inputAction;
