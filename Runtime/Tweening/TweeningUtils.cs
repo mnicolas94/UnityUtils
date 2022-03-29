@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -13,12 +14,13 @@ namespace Utils.Tweening
             Vector3 from,
             Vector3 to,
             float duration,
-            CurveFunction curveFunction)
+            CurveFunction curveFunction,
+            CancellationToken ct)
         {
             float startTime = Time.time;
             float timeToFinish = startTime + duration;
             Vector3 newPosition;
-            while (Time.time <= timeToFinish)
+            while (Time.time <= timeToFinish && !ct.IsCancellationRequested)
             {
                 float time = Time.time - startTime;
                 float normalizedTime = curveFunction(time, duration);
