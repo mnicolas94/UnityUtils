@@ -1,0 +1,12 @@
+name: Bump version patch on push to main branch
+
+on:
+  push:
+    branches: [ main, dev, develop ]
+    
+jobs:
+  bumpVersion:
+    uses: mnicolas94/UnityCICDWorkflows/.github/workflows/bump_patch.yml@v1-pre-8
+  updateJson:
+    needs: bumpVersion
+    uses: mnicolas94/UnityCICDWorkflows/.github/workflows/unity_package_set_version_from_tag.yml@v1-pre-8

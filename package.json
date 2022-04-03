@@ -2,7 +2,7 @@
   "name": "com.facticus.utils",
   "version": "0.6.1",
   "displayName": "Utils",
-  "description": "Scripts útiles que puedo reutilizar",
+  "description": "Unity utility functions and extensions",
   "unity": "",
   "unityRelease": "",
   "dependencies": { },
