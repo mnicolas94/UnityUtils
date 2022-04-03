@@ -1,18 +1,16 @@
 {
   "name": "com.facticus.utils",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "displayName": "Utils",
   "description": "Unity utility functions and extensions",
   "unity": "",
   "unityRelease": "",
-  "dependencies": { },
-  "keywords": [
-    
-  ],
+  "dependencies": {},
+  "keywords": [],
   "author": {
-	  "name": "Facticus",
-	  "email": "",
-	  "url": ""
+    "name": "Facticus",
+    "email": "",
+    "url": ""
   },
   "repository": {
     "type": "git",
