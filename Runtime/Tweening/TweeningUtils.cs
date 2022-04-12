@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Utils.Tweening
 {
     public static class TweeningUtils
     {
-        public static async Task TweenTime(
+        public static async Task TweenTimeAsync(
             Action<float> timeDependantFunction,
             float duration,
             Curves.TimeCurveFunction timeCurve,
@@ -26,6 +27,22 @@ namespace Utils.Tweening
             }
         }
         
+        public static IEnumerator TweenTimeCoroutine(
+            Action<float> timeDependantFunction,
+            float duration,
+            Curves.TimeCurveFunction timeCurve)
+        {
+            float startTime = Time.time;
+            float timeToFinish = startTime + duration;
+            while (Time.time <= timeToFinish)
+            {
+                float time = Time.time - startTime;
+                float normalizedTime = timeCurve(time, duration);
+                timeDependantFunction(normalizedTime);
+                yield return null;
+            }
+        }
+        
         public static async Task TweenMoveAsync(
             this Transform transform,
             Vector3 from,
@@ -34,10 +51,9 @@ namespace Utils.Tweening
             Curves.TimeCurveFunction timeCurve,
             CancellationToken ct)
         {
-            Vector3 newPosition;
-            await TweenTime(normalizedTime =>
+            await TweenTimeAsync(normalizedTime =>
                 {
-                    newPosition = Vector3.Lerp(from, to, normalizedTime);
+                    var newPosition = Vector3.Lerp(from, to, normalizedTime);
                     transform.position = newPosition;
                 },
                 duration,
@@ -55,7 +71,7 @@ namespace Utils.Tweening
             Curves.TimeCurveFunction timeCurve,
             CancellationToken ct)
         {
-            await TweenTime(normalizedTime =>
+            await TweenTimeAsync(normalizedTime =>
                 {
                     int index = (int)(sprites.Count * normalizedTime);
                     var sprite = sprites[index];
@@ -64,6 +80,23 @@ namespace Utils.Tweening
                 duration,
                 timeCurve,
                 ct
+            );
+        }
+        
+        public static IEnumerator TweenSpritesCoroutine(
+            this SpriteRenderer spriteRenderer,
+            IList<Sprite> sprites,
+            float duration,
+            Curves.TimeCurveFunction timeCurve)
+        {
+            return TweenTimeCoroutine(normalizedTime =>
+                {
+                    int index = (int)(sprites.Count * normalizedTime);
+                    var sprite = sprites[index];
+                    spriteRenderer.sprite = sprite;
+                },
+                duration,
+                timeCurve
             );
         }
     }
