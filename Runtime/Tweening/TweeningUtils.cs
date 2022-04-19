@@ -89,15 +89,20 @@ namespace Utils.Tweening
             float duration,
             Curves.TimeCurveFunction timeCurve)
         {
-            return TweenTimeCoroutine(normalizedTime =>
-                {
-                    int index = (int)(sprites.Count * normalizedTime);
-                    var sprite = sprites[index];
-                    spriteRenderer.sprite = sprite;
-                },
-                duration,
-                timeCurve
-            );
+            if (sprites.Count > 0)
+            {
+                return TweenTimeCoroutine(normalizedTime =>
+                    {
+                        int index = (int) ((sprites.Count - 1) * normalizedTime);
+                        var sprite = sprites[index];
+                        spriteRenderer.sprite = sprite;
+                    },
+                    duration,
+                    timeCurve
+                );
+            }
+
+            return null;
         }
     }
 }
