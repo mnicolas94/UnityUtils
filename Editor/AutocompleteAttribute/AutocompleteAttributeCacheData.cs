@@ -10,7 +10,6 @@ namespace Utils.Editor.AutocompleteAttribute
     public class AutocompleteAttributeCacheData : ScriptableObject, ISerializationCallbackReceiver
     {
         [SerializeField] private List<HashedAutocompleteEntry> _serializableValues;
-        [SerializeField] public List<SerializedProperty> asd;
         private Dictionary<string, Dictionary<ObjectProperty, string>> _cache;
 
         public Dictionary<string, Dictionary<ObjectProperty, string>> Cache => _cache;

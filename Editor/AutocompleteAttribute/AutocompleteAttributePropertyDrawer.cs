@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Editor;
@@ -86,6 +87,13 @@ namespace Utils.Editor.AutocompleteAttribute
         private CacheType GetCache()
         {
             var data = Resources.Load<AutocompleteAttributeCacheData>("AutocompleteAttributeCacheData");
+            if (!data)
+            {
+                data = ScriptableObject.CreateInstance<AutocompleteAttributeCacheData>();
+                string path = "Assets/Editor/Resources/AutocompleteAttributeCacheData.asset";
+                Directory.CreateDirectory(path);
+                AssetDatabase.CreateAsset(data, path);
+            }
             var cache = data.Cache;
             return cache;
         }
