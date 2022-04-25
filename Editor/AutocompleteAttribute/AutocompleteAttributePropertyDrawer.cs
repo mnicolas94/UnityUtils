@@ -103,7 +103,7 @@ namespace Utils.Editor.AutocompleteAttribute
         private static void SaveData()
         {
             var data = Resources.Load<AutocompleteAttributeCacheData>("AutocompleteAttributeCacheData");
-            if (!data)
+            if (data)
             {
                 EditorUtility.SetDirty(data);
             }
