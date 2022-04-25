@@ -1,9 +1,8 @@
-﻿﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace Utils.Editor.EditorGUIUtils
 {
     /// <summary>
     /// Code from https://www.clonefactor.com/wordpress/program/c/1809/

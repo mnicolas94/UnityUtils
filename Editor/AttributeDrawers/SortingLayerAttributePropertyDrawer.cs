@@ -2,7 +2,7 @@
 using UnityEngine;
 using Utils.Attributes;
 
-namespace Utils.Editor
+namespace Utils.Editor.AttributeDrawers
 {
     /**
      * Taken from http://answers.unity.com/answers/682299/view.html

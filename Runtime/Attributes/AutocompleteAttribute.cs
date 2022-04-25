@@ -1,9 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Utils.Attributes
 {
-    [AttributeUsage(AttributeTargets.Field)]
     public class AutocompleteAttribute : PropertyAttribute
     {
         private string _customHash;

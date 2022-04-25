@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Editor;
 using UnityEditor;
 using UnityEngine;
+using Utils.Editor.EditorGUIUtils;
 
 namespace Utils.Editor.AutocompleteAttribute
 {
