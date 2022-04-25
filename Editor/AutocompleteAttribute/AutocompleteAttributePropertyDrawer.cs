@@ -18,7 +18,7 @@ namespace Utils.Editor.AutocompleteAttribute
             // assert is type string 
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.HelpBox(position, property.name + "{0} is not a string but has [Autocomplete].", MessageType.Error);
+                EditorGUI.HelpBox(position, $"{property.name} is not a string but has [Autocomplete].", MessageType.Error);
             }
             else
             {
@@ -49,6 +49,8 @@ namespace Utils.Editor.AutocompleteAttribute
             var obj = property.serializedObject.targetObject;
             var target = new ObjectProperty(obj, property.propertyPath);
             dict[target] = newValue;
+            
+            SaveData();
         }
 
         private string GetPropertyHash(SerializedProperty property)
@@ -96,6 +98,15 @@ namespace Utils.Editor.AutocompleteAttribute
             }
             var cache = data.Cache;
             return cache;
+        }
+
+        private static void SaveData()
+        {
+            var data = Resources.Load<AutocompleteAttributeCacheData>("AutocompleteAttributeCacheData");
+            if (!data)
+            {
+                EditorUtility.SetDirty(data);
+            }
         }
         
         private void RemoveNullCachedData(CacheType cache)
