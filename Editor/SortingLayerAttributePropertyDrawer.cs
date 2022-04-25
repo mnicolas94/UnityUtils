@@ -18,7 +18,7 @@ namespace Utils.Editor
             
             if (property.propertyType != SerializedPropertyType.String)
             {
-                EditorGUI.HelpBox(position, property.name + "{0} is not an string but has [SortingLayer].", MessageType.Error);
+                EditorGUI.HelpBox(position, property.name + "{0} is not a string but has [SortingLayer].", MessageType.Error);
             }
             else if (sortingLayerNames.Length == 0)
             {
