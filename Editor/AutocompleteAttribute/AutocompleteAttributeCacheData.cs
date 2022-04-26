@@ -6,7 +6,6 @@ using Object = UnityEngine.Object;
 
 namespace Utils.Editor.AutocompleteAttribute
 {
-    [CreateAssetMenu(fileName = "AutocompleteAttributeCacheData", menuName = "AutocompleteAttributeCacheData")]
     public class AutocompleteAttributeCacheData : ScriptableObject, ISerializationCallbackReceiver
     {
         [SerializeField] private List<HashedAutocompleteEntry> _serializableValues;
