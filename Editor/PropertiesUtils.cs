@@ -4,6 +4,9 @@ using UnityEditor;
 
 namespace Utils.Editor
 {
+    /// <summary>
+    /// This code was taken from https://github.com/dbrizov/NaughtyAttributes
+    /// </summary>
     public static class PropertiesUtils
     {
         public static object GetTargetObjectOfProperty(SerializedProperty prop)
