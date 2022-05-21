@@ -1,4 +1,4 @@
-![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url = https://github.com/mnicolas94/UnityUtils)
+![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https://github.com/mnicolas94/UnityUtils)
 
 # Utils
 
