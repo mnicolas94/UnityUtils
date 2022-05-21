@@ -1,4 +1,4 @@
-[![HitCount](https://hits.dwyl.com/mnicolas94/UnityUtils.svg?style=flat-square)](http://hits.dwyl.com/mnicolas94/UnityUtils)
+[![HitCount](https://hits.dwyl.com/mnicolas94/UnityUtils.svg?style=flat-square&show=unique)](http://hits.dwyl.com/mnicolas94/UnityUtils)
 
 # Utils
 
