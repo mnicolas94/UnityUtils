@@ -8,13 +8,13 @@ namespace Utils.Editor.Gizmos
 {
     public static class GridCoordinatesGizmo
     {
-        [DrawGizmo(GizmoType.InSelectionHierarchy)]
+        [DrawGizmo(GizmoType.Selected)]
         public static void DrawGizmo(Grid grid, GizmoType gizmoType)
         {
             Draw(SceneView.currentDrawingSceneView, grid);
         }
         
-        [DrawGizmo(GizmoType.InSelectionHierarchy)]
+        [DrawGizmo(GizmoType.Selected)]
         public static void DrawGizmo(Tilemap tilemap, GizmoType gizmoType)
         {
             Draw(SceneView.currentDrawingSceneView, tilemap.layoutGrid);
