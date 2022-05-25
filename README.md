@@ -1,5 +1,6 @@
+[![openupm](https://img.shields.io/npm/v/com.facticus.utils?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.facticus.utils/)
 [![HitCount](https://hits.dwyl.com/mnicolas94/UnityUtils.svg?style=flat&show=unique)](http://hits.dwyl.com/mnicolas94/UnityUtils)
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/mnicolas94/UnityUtils?label=version)
+
 
 # Utils
 
