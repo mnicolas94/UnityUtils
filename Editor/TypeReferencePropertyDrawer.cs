@@ -2,6 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 using UnityEditor;
+using Utils.Serializables;
 
 namespace Utils.Editor
 {
