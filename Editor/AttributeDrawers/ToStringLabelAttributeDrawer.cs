@@ -14,7 +14,6 @@ namespace Utils.Editor.AttributeDrawers
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginProperty(position, label, property);
             try
             {
                 var target = PropertiesUtils.GetTargetObjectOfProperty(property);
@@ -25,7 +24,6 @@ namespace Utils.Editor.AttributeDrawers
             {
                 EditorGUI.PropertyField(position, property, label, true);
             }
-            EditorGUI.EndProperty();
         }
     }
 }
