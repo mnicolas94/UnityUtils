@@ -12,6 +12,14 @@ namespace Utils.Input
             return inputAction;
         }
         
+        public static InputAction GetDoubleTapAction()
+        {
+            var inputAction = new InputAction("MultiTap", InputActionType.PassThrough, interactions: "MultiTap(tapCount=2)");
+            AddPointerBindings(inputAction);
+
+            return inputAction;
+        }
+        
         public static InputAction GetClickAction()
         {
             var inputAction = new InputAction("Click", InputActionType.PassThrough);
