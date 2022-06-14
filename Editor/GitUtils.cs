@@ -40,7 +40,7 @@ namespace Utils.Editor
             process.Close();        // Close the process ensuring it frees it resources.
 
             // Check for failure due to no git setup in the project itself or other fatal errors from git.
-            if (output.Contains("fatal") || output == "no-git" || output == "") {
+            if (output.Contains("fatal") || output == "no-git") {
                 throw new Exception("Command: git " + @gitCommand + " Failed\n" + output + errorOutput);
             }
             // Log any errors.
