@@ -27,5 +27,17 @@ namespace Utils.Extensions
 
             return new Rect(xMin, yMin, width, height);
         }
+        
+        public static Vector2 RandomPositionInside(this Rect rect)
+        {
+            var min = rect.min;
+            var max = rect.max;
+
+            var pos = Vector2.zero;
+            pos.x = Random.Range(min.x, max.x);
+            pos.y = Random.Range(min.y, max.y);
+        
+            return pos;
+        }
     }
 }
