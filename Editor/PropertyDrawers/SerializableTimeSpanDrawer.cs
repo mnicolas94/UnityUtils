@@ -2,7 +2,7 @@
 using UnityEngine;
 using Utils.Serializables;
 
-namespace Utils.Editor
+namespace Utils.Editor.PropertyDrawers
 {
     [CustomPropertyDrawer(typeof(SerializableTimeSpan))]
     public class SerializableTimeSpanDrawer : PropertyDrawer

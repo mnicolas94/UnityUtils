@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Reflection;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 using Utils.Serializables;
 
-namespace Utils.Editor
+namespace Utils.Editor.PropertyDrawers
 {
     /**
      * Inspiration and some methods were taken from
