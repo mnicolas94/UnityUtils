@@ -5,7 +5,10 @@
   "description": "Unity utility functions and extensions",
   "unity": "",
   "unityRelease": "",
-  "dependencies": {},
+  "dependencies": {
+    "com.unity.inputsystem": "1.0.2",
+    "com.unity.textmeshpro": "3.0.6"
+  },
   "keywords": [],
   "author": {
     "name": "Facticus",

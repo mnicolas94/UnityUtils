@@ -120,7 +120,7 @@ namespace Utils.Editor
                 Debug.Log($"Changes in files:\n{string.Join("\n", changes)}");
         }
         
-        [MenuItem("Utils/Fix serialized references")]
+        [MenuItem("Tools/Facticus/Utils/Fix serialized references")]
         public static void FixSerializedReferences()
         {
             var window = CreateInstance<EditorFixSerializableReferences>();

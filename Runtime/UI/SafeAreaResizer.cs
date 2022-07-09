@@ -1,12 +1,14 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Screen = UnityEngine.Device.Screen;
 
 namespace Utils.UI
 {
     public class SafeAreaResizer : MonoBehaviour
     {
-        [SerializeField] private RectTransform target;
+        [FormerlySerializedAs("target"), SerializeField]
+        private RectTransform _target;
         
         private void Start()
         {
@@ -24,18 +26,18 @@ namespace Utils.UI
             anchorMax.x /= Screen.width;
             anchorMax.y /= Screen.height;
 
-            target.anchorMin = anchorMin;
-            target.anchorMax = anchorMax;
+            _target.anchorMin = anchorMin;
+            _target.anchorMax = anchorMax;
         }
         
 #if UNITY_EDITOR
 
-        [Space] public Rect rect;
+        [Space] public Rect _rect;
 
         [ContextMenu("Set test rect")]
         public void ChangeGlobalSafeAreaRect()
         {
-            SafeAreaResizerEditorUtils.GlobalTestSafeAreaRect = rect;
+            SafeAreaResizerEditorUtils.GlobalTestSafeAreaRect = _rect;
         }
 
         [ContextMenu("Resize to safe area")]
@@ -57,7 +59,7 @@ namespace Utils.UI
     {
         public static Rect GlobalTestSafeAreaRect = new Rect(0, 0.05f, 1, 0.9f);
         
-        [MenuItem("Ui/Resize all safe area resizers")]
+        [MenuItem("Tools/Facticus/Utils/Ui/Resize all safe area resizers")]
         public static void ResizeAll()
         {
             var allResizers = GameObject.FindObjectsOfType<SafeAreaResizer>();
