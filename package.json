@@ -1,12 +1,11 @@
 {
   "name": "com.facticus.utils",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "displayName": "Utils",
   "description": "Unity utility functions and extensions",
   "unity": "",
   "unityRelease": "",
-  "dependencies": {
-  },
+  "dependencies": {},
   "keywords": [],
   "author": {
     "name": "Facticus",
