@@ -40,11 +40,21 @@ using UnityEditor;
 
         public static Type GetSubclassTypeByName(Type baseClass, string subClassName)
         {
-            var type = TypeCache.GetTypesDerivedFrom(baseClass).First(t => !t.IsInterface &&
-                                                                           !t.IsPointer &&
-                                                                           !t.IsAbstract &&
-                                                                           t.Name == subClassName);
-            return type;
+            bool Predicate(Type t)
+            {
+                return !t.IsInterface &&
+                       !t.IsPointer &&
+                       !t.IsAbstract &&
+                       t.Name == subClassName;
+            }
+
+            var exists = TypeCache.GetTypesDerivedFrom(baseClass).Any(Predicate);
+            if (exists)
+            {
+                var type = TypeCache.GetTypesDerivedFrom(baseClass).First(Predicate);
+                return type;
+            }
+            return null;
         }
 #endif
     }

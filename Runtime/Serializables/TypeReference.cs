@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Utils.Serializables
@@ -38,7 +39,8 @@ namespace Utils.Serializables
         {
             if (tp != null)
             {
-                return tp.Assembly.GetName().Name + "|" + tp.FullName;
+//                return tp.Assembly.GetName().Name + "|" + tp.FullName;
+                return $"type: {{class: {tp.Name}, ns: {tp.Namespace}, asm: {tp.Assembly.GetName().Name}}}";
             }
             else
             {
@@ -50,17 +52,31 @@ namespace Utils.Serializables
         {
             if (!string.IsNullOrEmpty(hash))
             {
-                var arr = hash.Split('|');
-                string assemblyName = arr.Length > 0 ? arr[0] : string.Empty;
-                string typeName = arr.Length > 1 ? arr[1] : string.Empty;
+                var classMatches = new Regex(@"class: (?<class>\w+)").Matches(hash);
+                var namespaceMatches = new Regex(@"ns: (?<ns>(\w+.)*\w+)").Matches(hash);
+                var assemblyMatches = new Regex(@"asm: (?<asm>(\w+.)*\w+)").Matches(hash);
+
+                string className = "";
+                string assemblyName = "";
+                string typeName = "";
+
+                bool correctlySerialized = classMatches.Count > 0 && namespaceMatches.Count > 0 && assemblyMatches.Count > 0;
+                if (correctlySerialized)
+                {
+                    className = classMatches[0].Groups["class"].Value;
+                    string namespaceName = namespaceMatches[0].Groups["ns"].Value;
+                    assemblyName = assemblyMatches[0].Groups["asm"].Value;
+                    typeName = $"{namespaceName}.{className}";
+                }
+//                var arr = hash.Split('|');
+//                string assemblyName = arr.Length > 0 ? arr[0] : string.Empty;
+//                string typeName = arr.Length > 1 ? arr[1] : string.Empty;
                 var tp = TypeUtil.ParseType(assemblyName, typeName);
 
 #if UNITY_EDITOR
                 // try recover type
                 if (tp == null)
                 {
-                    var tokens = typeName.Split('.');
-                    string className = tokens[tokens.Length - 1];
                     tp = TypeUtil.GetSubclassTypeByName(baseType, className);
                 }
 #endif

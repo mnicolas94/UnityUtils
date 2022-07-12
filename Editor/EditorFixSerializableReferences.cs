@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -20,7 +21,8 @@ namespace Utils.Editor
         private string _newNamespace;
         private string _newClassName;
         private readonly (string, string)[,] _table = new (string, string)[3, 2];
-        
+
+        private bool _preview;
         private string _okButton;
         private string _cancelButton;
         private Action _onOkButton;
@@ -40,13 +42,13 @@ namespace Utils.Editor
             return true;
         }
 
-        private static bool IsWildcard(string str)
+        private static bool IsEmpty(string str)
         {
-            return string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str) || str == "*";
+            return string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str);
         }
         
         public static void FixSerializedReferences(string oldAssembly, string oldNamespace, string oldClassName,
-            string newAssembly, string newNamespace, string newClassName, string searchString="")
+            string newAssembly, string newNamespace, string newClassName, string searchString="", bool preview=false)
         {
             Assert.IsTrue(IsValid(oldAssembly, out var oldAssemblyError), $"oldAssembly {oldAssemblyError}");
             Assert.IsTrue(IsValid(oldNamespace, out var oldNamespaceError), $"oldNamespace {oldNamespaceError}");
@@ -54,6 +56,11 @@ namespace Utils.Editor
             Assert.IsTrue(IsValid(newAssembly, out var newAssemblyError), $"newAssembly {newAssemblyError}");
             Assert.IsTrue(IsValid(newNamespace, out var newNamespaceError), $"newNamespace {newNamespaceError}");
             Assert.IsTrue(IsValid(newClassName, out var newClassNameError), $"newClassName {newClassNameError}");
+            
+            // replace with regex wildcard
+            oldAssembly = IsEmpty(oldAssembly) ? "[^,}]*" : oldAssembly;
+            oldNamespace = IsEmpty(oldNamespace) ? "[^,}]*" : oldNamespace;
+            oldClassName = IsEmpty(oldClassName) ? "[^,}]*" : oldClassName;
             
             var guidsList = new List<string>();
             if (!string.IsNullOrEmpty(searchString))
@@ -80,46 +87,76 @@ namespace Utils.Editor
                 {
                     string line = oldLines[i];
                     string newLine = line;
-                    bool isReferenceLine = line.Trim().StartsWith("type: {class:");
-                    bool containsAssembly = IsWildcard(oldAssembly) || line.Contains($"asm: {oldAssembly}");
-                    bool containsNamespace = IsWildcard(oldNamespace) || line.Contains($"ns: {oldNamespace}");
-                    bool containsClassName = IsWildcard(oldClassName) || line.Contains($"class: {oldClassName}");
+                    var rx = new Regex(@"type: {class: (.*), ns: (.*), asm: (.*)}");
+                    bool isReferenceLine = rx.IsMatch(line);
+                    bool containsAssembly = ContainsPattern(line, "asm", oldAssembly);
+                    bool containsNamespace = ContainsPattern(line, "ns", oldNamespace);
+                    bool containsClassName = ContainsPattern(line, "class", oldClassName);
                     if (isReferenceLine && containsAssembly && containsNamespace && containsClassName)
                     {
-                        if (!IsWildcard(newAssembly))
+                        if (!IsEmpty(newAssembly))
                         {
-                            newLine = newLine.Replace(oldAssembly, newAssembly);
+                            newLine = Replace(newLine, "asm", oldAssembly, newAssembly);
                             anyChange = true;
                         }
-                        if (!IsWildcard(newNamespace))
+                        if (!IsEmpty(newNamespace))
                         {
-                            newLine = newLine.Replace(oldNamespace, newNamespace);
+                            newLine = Replace(newLine, "ns", oldNamespace, newNamespace);
                             anyChange = true;
                         }
-                        if (!IsWildcard(newClassName))
+                        if (!IsEmpty(newClassName))
                         {
-                            newLine = newLine.Replace(oldClassName, newClassName);
+                            newLine = Replace(newLine, "class", oldClassName, newClassName);
                             anyChange = true;
                         }
 
                         var changeString = $"-Line: {$"{i + 1}".PadRight(6)} File: {assetPath}" +
-                                           $" | old line: {line} | new line: {newLine}";
+                                           $"\nold line: {line}" +
+                                           $"\nnew line: {newLine}";
                         changes.Add(changeString);
                     }
 
                     newLines[i] = newLine;
                 }
 
-                if (anyChange)
+                if (anyChange && !preview)
                 {
                     File.WriteAllLines(assetPath, newLines);
                 }
             }
             
             if (changes.Count > 0)
-                Debug.Log($"Changes in files:\n{string.Join("\n", changes)}");
+                Debug.Log($"Changes in files:\n{string.Join("\n\n", changes)}");
         }
-        
+
+        private static string Replace(string input, string prefix, string oldPattern, string newValue)
+        {
+            var sectionRx = new Regex($"{prefix}: [^,}}]*");
+            if (sectionRx.IsMatch(input))
+            {
+                var validSection = sectionRx.Matches(input)[0].Value;
+                var rx = new Regex($"{prefix}: {oldPattern}");
+                var newSection = rx.Replace(validSection, $"{prefix}: {newValue}");
+                var replaced = input.Replace(validSection, newSection);
+                return replaced;
+            }
+
+            return input;
+        }
+
+        private static bool ContainsPattern(string line, string prefix, string pattern)
+        {
+            var rx = new Regex($"{prefix}: [^,}}]*");
+            if (rx.IsMatch(line))
+            {
+                var validSection = rx.Matches(line)[0].Value;
+                bool containsPattern = new Regex($"{prefix}: {pattern}").IsMatch(validSection);
+                return containsPattern;
+            }
+
+            return false;
+        }
+
         [MenuItem("Tools/Facticus/Utils/Fix serialized references")]
         public static void FixSerializedReferences()
         {
@@ -135,8 +172,9 @@ namespace Utils.Editor
                 window._table[0, 1].Item2,
                 window._table[1, 1].Item2,
                 window._table[2, 1].Item2,
-                window._searchString
-                );
+                window._searchString,
+                window._preview
+            );
             window.InitializeStringsTable();
             
             window.ShowModal();
@@ -212,14 +250,21 @@ namespace Utils.Editor
 
             float halfHorizontalSpacing = 4;
             
-            r.width /= 2;
+            r.width /= 3;
             r.width -= halfHorizontalSpacing;
-            if (GUI.Button(r, _okButton)) {
+            float horizontalOffset = r.width + 2 * halfHorizontalSpacing;
+
+            _preview = GUI.Toggle(r, _preview, "preview");
+            r.x += horizontalOffset;
+
+            string replaceButtonName = _preview ? "Preview" : _okButton;
+
+            if (GUI.Button(r, replaceButtonName)) {
                 _onOkButton?.Invoke();
                 _shouldClose = true;
             }
- 
-            r.x += r.width + 2 * halfHorizontalSpacing;
+
+            r.x += horizontalOffset;
             if (GUI.Button(r, _cancelButton)) {
                 _shouldClose = true;
             }
