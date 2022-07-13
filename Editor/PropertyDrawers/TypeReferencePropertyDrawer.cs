@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using Utils.Serializables;
@@ -71,6 +74,71 @@ namespace Utils.Editor.PropertyDrawers
             if (hashProp == null) return;
             hashProp.stringValue = TypeReference.HashType(tp);
             property.serializedObject.ApplyModifiedProperties();
+        }
+    }
+
+    public static class FixTypeHashes
+    {
+        [MenuItem("Tools/Facticus/Fix TypeReferences hashes")]
+        public static void FixNotPreview()
+        {
+            Fix(false);
+        }
+        
+        [MenuItem("Tools/Facticus/Fix TypeReferences hashes preview")]
+        public static void FixPreview()
+        {
+            Fix(true);
+        }
+        
+        
+        public static void Fix(bool preview=true)
+        {
+            var guidsList = new List<string>();
+            guidsList.AddRange(AssetDatabase.FindAssets("t:ScriptableObject"));
+            guidsList.AddRange(AssetDatabase.FindAssets("t:Scene"));
+            guidsList.AddRange(AssetDatabase.FindAssets("t:Prefab"));
+            
+            var assetsPaths = guidsList.ConvertAll(AssetDatabase.GUIDToAssetPath);
+            var changes = new List<string>();
+
+            foreach (var assetPath in assetsPaths)
+            {
+                var oldLines = File.ReadAllLines(assetPath);
+                var newLines = new string[oldLines.Length];
+                bool anyChange = false;
+                for (int i = 0; i < oldLines.Length; i++)
+                {
+                    string line = oldLines[i];
+                    string newLine = line;
+                    var rx = new Regex(@"_typeHash: (?<hash>([^|]*\|)(.+))");
+                    bool isReferenceLine = rx.IsMatch(line);
+                    if (isReferenceLine)
+                    {
+                        anyChange = true;
+                        
+                        string oldHash = rx.Matches(line)[0].Groups["hash"].Value;
+                        var type = TypeReference.OldUnHashType(oldHash);
+                        string newHash = TypeReference.HashType(type);
+                        newLine = rx.Replace(line, $"_typeHash: '{newHash}'");
+
+                        var changeString = $"-Line: {$"{i + 1}".PadRight(6)} File: {assetPath}" +
+                                           $"\nold line: {line}" +
+                                           $"\nnew line: {newLine}";
+                        changes.Add(changeString);
+                    }
+
+                    newLines[i] = newLine;
+                }
+
+                if (anyChange && !preview)
+                {
+                    File.WriteAllLines(assetPath, newLines);
+                }
+            }
+            
+            if (changes.Count > 0)
+                Debug.Log($"Changes in files:\n{string.Join("\n\n", changes)}");
         }
     }
 }

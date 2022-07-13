@@ -94,6 +94,29 @@ namespace Utils.Serializables
                 return null;
             }
         }
+        
+        public static Type OldUnHashType(string hash)
+        {
+            if (!string.IsNullOrEmpty(hash))
+            {
+                var arr = hash.Split('|');
+                string assemblyName = arr.Length > 0 ? arr[0] : string.Empty;
+                string typeName = arr.Length > 1 ? arr[1] : string.Empty;
+                var tp = TypeUtil.ParseType(assemblyName, typeName);
+
+                //set type to void if the type is unfruitful, this way we're not constantly retesting this
+                if (tp == null)
+                {   
+                    tp = typeof(void);
+                }
+                
+                return tp;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 
     [Serializable]
