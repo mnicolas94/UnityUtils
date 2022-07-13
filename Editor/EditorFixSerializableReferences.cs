@@ -261,7 +261,8 @@ namespace Utils.Editor
 
             if (GUI.Button(r, replaceButtonName)) {
                 _onOkButton?.Invoke();
-                _shouldClose = true;
+                if (!_preview)
+                    _shouldClose = true;
             }
 
             r.x += horizontalOffset;
