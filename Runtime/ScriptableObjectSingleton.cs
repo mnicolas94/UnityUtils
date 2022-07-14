@@ -52,7 +52,8 @@ namespace Utils
             
             if (assets.Length == 0)
             {
-                throw new Exception($"Could not load any singleton object of type {typeof(T)}");
+                Debug.LogWarning($"Could not load any singleton object of type {typeof(T)}");
+                return null;
             }
             else if (assets.Length > 1)
             {
@@ -67,6 +68,7 @@ namespace Utils
         
         private static void AddToPreloadedAssets(Object asset)
         {
+            if (asset == null) return;
             // add to preloaded assets if not yet
             var preloadedAssets = PlayerSettings.GetPreloadedAssets().ToList();
             if (!preloadedAssets.Contains(asset))
