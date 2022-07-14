@@ -39,7 +39,6 @@ namespace Utils.Serializables
         {
             if (tp != null)
             {
-//                return tp.Assembly.GetName().Name + "|" + tp.FullName;
                 return $"type: {{class: {tp.Name}, ns: {tp.Namespace}, asm: {tp.Assembly.GetName().Name}}}";
             }
             else
@@ -68,9 +67,6 @@ namespace Utils.Serializables
                     assemblyName = assemblyMatches[0].Groups["asm"].Value;
                     typeName = $"{namespaceName}.{className}";
                 }
-//                var arr = hash.Split('|');
-//                string assemblyName = arr.Length > 0 ? arr[0] : string.Empty;
-//                string typeName = arr.Length > 1 ? arr[1] : string.Empty;
                 var tp = TypeUtil.ParseType(assemblyName, typeName);
 
 #if UNITY_EDITOR
@@ -80,29 +76,6 @@ namespace Utils.Serializables
                     tp = TypeUtil.GetSubclassTypeByName(baseType, className);
                 }
 #endif
-
-                //set type to void if the type is unfruitful, this way we're not constantly retesting this
-                if (tp == null)
-                {   
-                    tp = typeof(void);
-                }
-                
-                return tp;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        
-        public static Type OldUnHashType(string hash)
-        {
-            if (!string.IsNullOrEmpty(hash))
-            {
-                var arr = hash.Split('|');
-                string assemblyName = arr.Length > 0 ? arr[0] : string.Empty;
-                string typeName = arr.Length > 1 ? arr[1] : string.Empty;
-                var tp = TypeUtil.ParseType(assemblyName, typeName);
 
                 //set type to void if the type is unfruitful, this way we're not constantly retesting this
                 if (tp == null)
