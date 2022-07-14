@@ -12,6 +12,7 @@ namespace Utils.Editor
     {
         private string _description;
 
+        private string _searchFolders;
         private string _searchString;
         
         private string _oldAssembly;
@@ -48,7 +49,8 @@ namespace Utils.Editor
         }
         
         public static void FixSerializedReferences(string oldAssembly, string oldNamespace, string oldClassName,
-            string newAssembly, string newNamespace, string newClassName, string searchString="", bool preview=false)
+            string newAssembly, string newNamespace, string newClassName, string searchString="", bool preview=false,
+            string[] searchInFolders=null)
         {
             Assert.IsTrue(IsValid(oldAssembly, out var oldAssemblyError), $"oldAssembly {oldAssemblyError}");
             Assert.IsTrue(IsValid(oldNamespace, out var oldNamespaceError), $"oldNamespace {oldNamespaceError}");
@@ -61,18 +63,19 @@ namespace Utils.Editor
             oldAssembly = IsEmpty(oldAssembly) ? "[^,}]*" : oldAssembly;
             oldNamespace = IsEmpty(oldNamespace) ? "[^,}]*" : oldNamespace;
             oldClassName = IsEmpty(oldClassName) ? "[^,}]*" : oldClassName;
-            
+
+            var folders = searchInFolders ?? new string[0];
             var guidsList = new List<string>();
             if (!string.IsNullOrEmpty(searchString))
             {
-                var guids = AssetDatabase.FindAssets(searchString);
+                var guids = AssetDatabase.FindAssets(searchString, folders);
                 guidsList.AddRange(guids);
             }
             else
             {
-                guidsList.AddRange(AssetDatabase.FindAssets("t:ScriptableObject"));
-                guidsList.AddRange(AssetDatabase.FindAssets("t:Scene"));
-                guidsList.AddRange(AssetDatabase.FindAssets("t:Prefab"));
+                guidsList.AddRange(AssetDatabase.FindAssets("t:ScriptableObject", folders));
+                guidsList.AddRange(AssetDatabase.FindAssets("t:Scene", folders));
+                guidsList.AddRange(AssetDatabase.FindAssets("t:Prefab", folders));
             }
             
             var assetsPaths = guidsList.ConvertAll(AssetDatabase.GUIDToAssetPath);
@@ -127,6 +130,8 @@ namespace Utils.Editor
             
             if (changes.Count > 0)
                 Debug.Log($"Changes in files:\n{string.Join("\n\n", changes)}");
+            else
+                Debug.Log("Did not find any asset with the provided info");
         }
 
         private static string Replace(string input, string prefix, string oldPattern, string newValue)
@@ -165,19 +170,26 @@ namespace Utils.Editor
             window._description = "Enter the old assembly, namespace and class name you want to replace";
             window._okButton = "Replace";
             window._cancelButton = "Cancel";
-            window._onOkButton += () => FixSerializedReferences(
-                window._table[0, 0].Item2,
-                window._table[1, 0].Item2,
-                window._table[2, 0].Item2,
-                window._table[0, 1].Item2,
-                window._table[1, 1].Item2,
-                window._table[2, 1].Item2,
-                window._searchString,
-                window._preview
-            );
+            window._onOkButton += () =>
+            {
+                string[] folders = null;
+                if (!string.IsNullOrEmpty(window._searchFolders))
+                    folders = window._searchFolders.Split(';');
+                FixSerializedReferences(
+                    window._table[0, 0].Item2,
+                    window._table[1, 0].Item2,
+                    window._table[2, 0].Item2,
+                    window._table[0, 1].Item2,
+                    window._table[1, 1].Item2,
+                    window._table[2, 1].Item2,
+                    window._searchString,
+                    window._preview,
+                    folders
+                );
+            };
             window.InitializeStringsTable();
             
-            window.ShowModal();
+            window.Show();
         }
 
         private void InitializeStringsTable()
@@ -224,6 +236,9 @@ namespace Utils.Editor
             EditorGUILayout.LabelField(_description);
             EditorGUILayout.Space();
 
+            EditorGUILayout.LabelField("[Optional] Folders to search in separated by ;");
+            _searchFolders = EditorGUILayout.TextField("", _searchFolders);
+            
             EditorGUILayout.LabelField("[Optional] Assets search string");
             _searchString = EditorGUILayout.TextField("", _searchString);
 
@@ -275,7 +290,7 @@ namespace Utils.Editor
             // restrict size
             var kLabelFloatMinW = (float) ((double) EditorGUIUtility.labelWidth + EditorGUIUtility.fieldWidth + 5.0);
             float width = kLabelFloatMinW * 3.2f;
-            float height = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * 9f;
+            float height = (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * 11f;
             minSize = new Vector2( width, height);
             maxSize = new Vector2(maxSize.x, height);
 
