@@ -1,5 +1,6 @@
 ﻿﻿using System;
-using UnityEditor;
+ using System.Collections.Generic;
+ using UnityEditor;
 using UnityEngine;
  
  /// <summary>
@@ -50,7 +51,7 @@ public class EditorInputDialog : EditorWindow
  
         EditorGUILayout.Space( 12 );
         EditorGUILayout.LabelField( description );
- 
+
         EditorGUILayout.Space( 8 );
         GUI.SetNextControlName( "inText" );
         inputText = EditorGUILayout.TextField( "", inputText );
