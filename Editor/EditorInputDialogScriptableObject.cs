@@ -103,18 +103,17 @@ namespace Utils.Editor
  
         #region Show()
     
-        public static bool Show<T>(
+        public static void Show<T>(
             string title,
             string description,
-            out T output,
+            Action<T> onOkPressed,
             string okButton = "OK",
             string cancelButton = "Cancel")
             where T : ScriptableObject
         {
             var maxPos = GUIUtility.GUIToScreenPoint( new Vector2( Screen.width, Screen.height ) );
 
-            bool success = false;
-            output = CreateInstance<T>();
+            var output = CreateInstance<T>();
             var so = new SerializedObject(output);
         
             var window = CreateInstance<EditorInputDialogScriptableObject>();
@@ -124,10 +123,8 @@ namespace Utils.Editor
             window._target = so;
             window._okButton = okButton;
             window._cancelButton = cancelButton;
-            window._onOkButton = () => success = true;
-            window.ShowModal();
- 
-            return success;
+            window._onOkButton = () => onOkPressed?.Invoke(output);
+            window.Show();
         }
         #endregion Show()
     }
