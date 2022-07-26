@@ -32,12 +32,12 @@ namespace Utils
 
         public static int GetRandomWeightedIndex(IList<float> weights)
         {
-            var accumulated = new List<float>{ weights[0] };
-            float sum = weights[0];
+            var accumulated = new List<float>(weights);
+            float sum = accumulated[0];
             
-            for (int i = 1; i < weights.Count; i++)
+            for (int i = 1; i < accumulated.Count; i++)
             {
-                float accum = accumulated[i - 1] + weights[i];
+                float accum = accumulated[i - 1] + accumulated[i];
                 accumulated[i] = accum;
                 sum += accum;
             }
