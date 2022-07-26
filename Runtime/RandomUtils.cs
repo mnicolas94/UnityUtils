@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Utils
 {
@@ -24,6 +28,32 @@ namespace Utils
             float mean = 0f;
             float sigma = 1 / 3.0f;
             return Mathf.Clamp(std * sigma + mean, -1, 1);
+        }
+
+        public static int GetRandomWeightedIndex(IList<float> weights)
+        {
+            var accumulated = new List<float>{ weights[0] };
+            float sum = weights[0];
+            
+            for (int i = 1; i < weights.Count; i++)
+            {
+                float accum = accumulated[i - 1] + weights[i];
+                accumulated[i] = accum;
+                sum += accum;
+            }
+
+            var normalized = accumulated.ConvertAll(val => val / sum);
+
+            float randomValue = Random.value;
+            for (int i = 0; i < normalized.Count; i++)
+            {
+                if (randomValue < normalized[i])
+                {
+                    return i;
+                }
+            }
+
+            throw new ArithmeticException("This should not happen");
         }
     }
 }
