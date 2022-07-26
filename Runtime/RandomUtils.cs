@@ -33,16 +33,15 @@ namespace Utils
         public static int GetRandomWeightedIndex(IList<float> weights)
         {
             var accumulated = new List<float>(weights);
-            float sum = accumulated[0];
             
             for (int i = 1; i < accumulated.Count; i++)
             {
                 float accum = accumulated[i - 1] + accumulated[i];
                 accumulated[i] = accum;
-                sum += accum;
             }
 
-            var normalized = accumulated.ConvertAll(val => val / sum);
+            float lasValue = accumulated[accumulated.Count - 1];
+            var normalized = accumulated.ConvertAll(val => val / lasValue);
 
             float randomValue = Random.value;
             for (int i = 0; i < normalized.Count; i++)
