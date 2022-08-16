@@ -1,9 +1,9 @@
 ﻿﻿namespace Utils.ModelView
 {
-    public interface IView
+    public interface IView<T>
     {
-        bool CanRenderModel(IModel model);
-        void Initialize(IModel model);
-        void UpdateView(IModel model);
+        bool CanRenderModel(T model);
+        void Initialize(T model);
+        void UpdateView(T model);
     }
 }

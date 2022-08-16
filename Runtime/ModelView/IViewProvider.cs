@@ -1,7 +1,7 @@
 ﻿﻿namespace Utils.ModelView
 {
-    public interface IViewProvider
+    public interface IViewProvider<T>
     {
-        IView TryGetViewForModel(IModel model, out bool exists);
+        IView<T> TryGetViewForModel(T model, out bool exists);
     }
 }

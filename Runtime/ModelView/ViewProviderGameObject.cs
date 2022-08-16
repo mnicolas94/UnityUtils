@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Utils.ModelView
 {
-    public class ViewProviderGameObject : MonoBehaviour, IViewProvider
+    public abstract class ViewProviderGameObject<T> : MonoBehaviour, IViewProvider<T>
     {
-        [SerializeField] private List<IView> _views;
+        [SerializeField] private List<IView<T>> _views;
         
-        public IView TryGetViewForModel(IModel model, out bool exists)
+        public IView<T> TryGetViewForModel(T model, out bool exists)
         {
             foreach (var view in _views)
             {

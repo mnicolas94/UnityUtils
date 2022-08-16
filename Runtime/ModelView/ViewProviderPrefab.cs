@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace Utils.ModelView
 {
-    public abstract class ViewProviderPrefab<TM> : ScriptableObject, IViewProvider where TM : IModel
+    public abstract class ViewProviderPrefab<TM> : ScriptableObject, IViewProvider<TM>
     {
         [SerializeField] private List<ViewBase<TM>> _viewsPrefabs;
 
-        public IView TryGetViewForModel(IModel model, out bool exists)
+        public IView<TM> TryGetViewForModel(TM model, out bool exists)
         {
-            return TryGetViewForModel((TM) model, out exists);
+            return TryGetViewPrefabForModel(model, out exists);
         }
         
-        public ViewBase<TM> TryGetViewForModel(TM model, out bool exists)
+        public ViewBase<TM> TryGetViewPrefabForModel(TM model, out bool exists)
         {
             foreach (var viewPrefab in _viewsPrefabs)
             {
