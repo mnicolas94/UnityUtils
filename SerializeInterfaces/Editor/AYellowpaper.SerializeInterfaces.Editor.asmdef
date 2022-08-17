@@ -1,12 +1,11 @@
 {
-    "name": "com.facticus.utils",
-    "rootNamespace": "",
+    "name": "AYellowpaper.SerializeInterfaces.Editor",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:75469ad4d38634e559750d17036d5f7c",
         "GUID:31976cc9e85bdd9459e856fcb40d0d50"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
