@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Utils.Attributes;
@@ -38,15 +39,32 @@ namespace Utils.Editor.AttributeDrawers
 
         private static Func<Object, bool> GetPredicateMethod(SerializedProperty property, AutoPropertyAttribute att)
         {
-            return att.PredicateMethodTarget == null ?
-                att.PredicateMethodName == null ?
-                    _ => true :
-                    (Func<Object, bool>)Delegate.CreateDelegate(typeof(Func<Object, bool>),
-                        property.serializedObject.targetObject,
-                        att.PredicateMethodName) :
-                (Func<Object, bool>)Delegate.CreateDelegate(typeof(Func<Object, bool>),
-                    att.PredicateMethodTarget,
-                    att.PredicateMethodName);
+            Func<Object, bool> function;
+            if (att.PredicateMethodName != null)
+            {
+                Type targetType = att.PredicateMethodTarget;
+                if (targetType != null)
+                {
+                    var bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+                    var methodInfo = targetType.GetMethod(att.PredicateMethodName, bindingFlags);
+                    function = (Func<Object, bool>) methodInfo.CreateDelegate(typeof(Func<Object, bool>), null);
+//                    function = (Func<Object, bool>) Delegate.CreateDelegate(typeof(Func<Object, bool>),
+//                        att.PredicateMethodTarget,
+//                        att.PredicateMethodName);
+                }
+                else
+                {
+                    var target = property.serializedObject.targetObject;
+                    function = (Func<Object, bool>) Delegate.CreateDelegate(typeof(Func<Object, bool>),
+                        target, att.PredicateMethodName);
+                }
+            }
+            else
+            {
+                function = _ => true;
+            }
+
+            return function;
         }
 
         private static IEnumerable<Object> GetObjectsFromAutoPropertyMode(
