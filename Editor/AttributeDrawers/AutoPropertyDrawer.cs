@@ -48,9 +48,6 @@ namespace Utils.Editor.AttributeDrawers
                     var bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
                     var methodInfo = targetType.GetMethod(att.PredicateMethodName, bindingFlags);
                     function = (Func<Object, bool>) methodInfo.CreateDelegate(typeof(Func<Object, bool>), null);
-//                    function = (Func<Object, bool>) Delegate.CreateDelegate(typeof(Func<Object, bool>),
-//                        att.PredicateMethodTarget,
-//                        att.PredicateMethodName);
                 }
                 else
                 {

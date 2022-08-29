@@ -90,5 +90,13 @@ namespace Utils.Editor
             stdout = stdout.Trim();
             return stdout;
         }
+
+        public static string GetUserName()
+        {
+            string gitCommand = "config --get user.name";
+            var stdout = RunGitCommand(gitCommand);
+            stdout = stdout.Trim();
+            return stdout;
+        }
     }
 }
