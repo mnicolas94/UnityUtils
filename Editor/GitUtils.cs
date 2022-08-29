@@ -6,13 +6,19 @@ namespace Utils.Editor
 {
     public static class GitUtils
     {
-        public static string RunGitCommand(string gitCommand) {
+        public static string RunGitCommand(string gitCommand)
+        {
+            return RunGitCommand(gitCommand, "");
+        }
+
+        public static string RunGitCommand(string gitCommand, string workingDir) {
             // Strings that will catch the output from our process.
             string output = "no-git";
             string errorOutput = "no-git";
 
             // Set up our processInfo to run the git command and log to output and errorOutput.
             ProcessStartInfo processInfo = new ProcessStartInfo("git", @gitCommand) {
+                WorkingDirectory = workingDir,
                 CreateNoWindow = true,          // We want no visible pop-ups
                 UseShellExecute = false,        // Allows us to redirect input, output and error streams
                 RedirectStandardOutput = true,  // Allows us to read the output stream
