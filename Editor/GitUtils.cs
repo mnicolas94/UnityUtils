@@ -56,62 +56,62 @@ namespace Utils.Editor
             return output;  // Return the output from git.
         }
 
-        public static string Add(string whatToAdd)
+        public static string Add(string whatToAdd, string gitRoot = "")
         {
             string gitCommand = $"add {whatToAdd}";
-            return RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand, gitRoot);
         }
         
-        public static string Commit(string message)
+        public static string Commit(string message, string gitRoot = "")
         {
             string gitCommand = $"commit -m {message}";
-            return RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand, gitRoot);
         }
         
-        public static string Push()
+        public static string Push(string gitRoot = "")
         {
             string gitCommand = "push";
-            return RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand, gitRoot);
         }
         
-        public static string Pull()
+        public static string Pull(string gitRoot = "")
         {
             string gitCommand = "pull";
-            return RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand, gitRoot);
         }
         
-        public static string Restore()
+        public static string Restore(string gitRoot = "")
         {
             string gitCommand = "restore .";
-            return RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand, gitRoot);
         }
 
-        public static string Switch(string switchTo)
+        public static string Switch(string switchTo, string gitRoot = "")
         {
             string gitCommand = $"switch {switchTo}";
-            return RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand, gitRoot);
         }
         
-        public static string GetGitCommitHash()
+        public static string GetGitCommitHash(string gitRoot = "")
         {
             string gitCommand = "rev-parse --short HEAD";
-            var stdout = RunGitCommand(gitCommand);
+            var stdout = RunGitCommand(gitCommand, gitRoot);
             stdout = stdout.Trim();
             return stdout;
         }
         
-        public static string GetLastTag()
+        public static string GetLastTag(string gitRoot = "")
         {
             string gitCommand = "describe --tags --abbrev=0 --match v[0-9]*";
-            var stdout = RunGitCommand(gitCommand);
+            var stdout = RunGitCommand(gitCommand, gitRoot);
             stdout = stdout.Trim();
             return stdout;
         }
 
-        public static string GetUserName()
+        public static string GetUserName(string gitRoot = "")
         {
             string gitCommand = "config --get user.name";
-            var stdout = RunGitCommand(gitCommand);
+            var stdout = RunGitCommand(gitCommand, gitRoot);
             stdout = stdout.Trim();
             return stdout;
         }
