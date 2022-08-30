@@ -55,35 +55,41 @@ namespace Utils.Editor
 
             return output;  // Return the output from git.
         }
+
+        public static string Add(string whatToAdd)
+        {
+            string gitCommand = $"add {whatToAdd}";
+            return RunGitCommand(gitCommand);
+        }
         
-        public static void Commit(string message)
+        public static string Commit(string message)
         {
             string gitCommand = $"commit -m {message}";
-            RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand);
         }
         
-        public static void Push()
+        public static string Push()
         {
             string gitCommand = "push";
-            RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand);
         }
         
-        public static void Pull()
+        public static string Pull()
         {
             string gitCommand = "pull";
-            RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand);
         }
         
-        public static void Restore()
+        public static string Restore()
         {
             string gitCommand = "restore .";
-            RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand);
         }
 
-        public static void Switch(string switchTo)
+        public static string Switch(string switchTo)
         {
             string gitCommand = $"switch {switchTo}";
-            RunGitCommand(gitCommand);
+            return RunGitCommand(gitCommand);
         }
         
         public static string GetGitCommitHash()
