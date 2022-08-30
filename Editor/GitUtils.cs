@@ -29,7 +29,6 @@ namespace Utils.Editor
             Process process = new Process {
                 StartInfo = processInfo
             };
-
             try {
                 process.Start();  // Try to start it, catching any exceptions if it fails
             } catch (Exception e) {
@@ -65,19 +64,25 @@ namespace Utils.Editor
         
         public static void Push()
         {
-            string gitCommand = $"push";
+            string gitCommand = "push";
             RunGitCommand(gitCommand);
         }
         
         public static void Pull()
         {
-            string gitCommand = $"pull";
+            string gitCommand = "pull";
             RunGitCommand(gitCommand);
         }
         
         public static void Restore()
         {
-            string gitCommand = $"restore .";
+            string gitCommand = "restore .";
+            RunGitCommand(gitCommand);
+        }
+
+        public static void Switch(string switchTo)
+        {
+            string gitCommand = $"switch {switchTo}";
             RunGitCommand(gitCommand);
         }
         
