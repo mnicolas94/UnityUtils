@@ -50,7 +50,7 @@ namespace Utils.Editor
             }
             // Log any errors.
             if (errorOutput != "") {
-                Debug.LogError("Git Error: " + errorOutput);
+                throw new Exception("Git Error: " + errorOutput);
             }
 
             return output;  // Return the output from git.
@@ -80,9 +80,9 @@ namespace Utils.Editor
             return RunGitCommand(gitCommand, gitRoot);
         }
         
-        public static string Restore(string gitRoot = "")
+        public static string Restore(string whatToRestore, string gitRoot = "")
         {
-            string gitCommand = "restore .";
+            string gitCommand = $"restore {whatToRestore}";
             return RunGitCommand(gitCommand, gitRoot);
         }
 
