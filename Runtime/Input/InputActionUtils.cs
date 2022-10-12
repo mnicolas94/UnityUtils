@@ -4,6 +4,14 @@ namespace Utils.Input
 {
     public static class InputActionUtils
     {
+        public static InputAction GetKeyAction(Key key)
+        {
+            var action = new InputAction(key.ToString());
+            action.AddBinding(Keyboard.current[key]);
+
+            return action;
+        }
+        
         public static InputAction GetTapAction()
         {
             var inputAction = new InputAction("Tap", InputActionType.PassThrough, interactions: "Tap");
