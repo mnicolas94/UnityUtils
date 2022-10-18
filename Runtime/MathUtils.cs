@@ -26,6 +26,12 @@ namespace Utils
                 yield return i;
             }
         }
-        
+
+        public static Vector2 FromPolar(float magnitude, float angle)
+        {
+            float x = magnitude * Mathf.Cos(angle);
+            float y = magnitude * Mathf.Sin(angle);
+            return new Vector2(x, y);
+        }
     }
 }

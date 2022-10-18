@@ -5,6 +5,18 @@ namespace Utils.Extensions
 {
     public static class Vector2Extensions
     {
+        /// <summary>
+        /// Converts to polar coordinates. Angle is calculated in degrees.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns> a tuple in the form (magnitude, angle)
+        public static (float, float) ToPolar(this Vector2 vector)
+        {
+            var magnitude = vector.magnitude;
+            var angle = Vector2.SignedAngle(Vector2.right, vector);
+            return (magnitude, angle);
+        }
+        
         public static Vector2 RemapBounds(this Vector2 vector, Rect currentBounds, Rect targetBounds)
         {
             float xMin = currentBounds.xMin;
