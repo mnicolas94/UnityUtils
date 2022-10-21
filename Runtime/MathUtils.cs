@@ -29,8 +29,9 @@ namespace Utils
 
         public static Vector2 FromPolar(float magnitude, float angle)
         {
-            float x = magnitude * Mathf.Cos(angle);
-            float y = magnitude * Mathf.Sin(angle);
+            var rad = angle * Mathf.Deg2Rad;
+            float x = magnitude * Mathf.Cos(rad);
+            float y = magnitude * Mathf.Sin(rad);
             return new Vector2(x, y);
         }
     }
