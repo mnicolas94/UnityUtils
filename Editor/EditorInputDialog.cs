@@ -177,7 +177,7 @@ namespace Utils.Editor
 
 
 [Serializable]
-public class Bool : ScriptableObject
+public class BoolContainer : ScriptableObject
 {
     [SerializeField] private bool _value;
 
@@ -185,7 +185,7 @@ public class Bool : ScriptableObject
 }
 
 [Serializable]
-public class Int : ScriptableObject
+public class IntContainer : ScriptableObject
 {
     [SerializeField] private int _value;
 
@@ -193,7 +193,7 @@ public class Int : ScriptableObject
 }
 
 [Serializable]
-public class Float : ScriptableObject
+public class FloatContainer : ScriptableObject
 {
     [SerializeField] private float _value;
 
@@ -201,7 +201,7 @@ public class Float : ScriptableObject
 }
 
 [Serializable]
-public class String : ScriptableObject
+public class StringContainer : ScriptableObject
 {
     [SerializeField] private string _value;
 
