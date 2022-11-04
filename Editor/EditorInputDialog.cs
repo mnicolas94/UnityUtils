@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Utils.Editor.EditorGUIUtils;
+using Object = UnityEngine.Object;
 
 namespace Utils.Editor
 {
@@ -105,18 +106,17 @@ namespace Utils.Editor
             }
         }
         #endregion OnGUI()
- 
+        
         #region Show()
-    
+        
         public static void Show<T>(
             string title,
             string description,
             List<(string, Action<T>)> buttons,
             Action<T> submitAction
-            )
-            where T : ScriptableObject
+        ) where T : ScriptableObject
         {
-            var maxPos = GUIUtility.GUIToScreenPoint( new Vector2( Screen.width, Screen.height ) );
+            var maxPos = GUIUtility.GUIToScreenPoint(new Vector2(Screen.width, Screen.height));
 
             var output = CreateInstance<T>();
             var so = new SerializedObject(output);
@@ -139,8 +139,7 @@ namespace Utils.Editor
             string title,
             string description,
             List<(string, Action<T>)> buttons
-        )
-            where T : ScriptableObject
+        ) where T : ScriptableObject
         {
             var submitAction = buttons.Count > 0 ? buttons[0].Item2 : null;
             Show(title, description, buttons, submitAction);
@@ -151,8 +150,8 @@ namespace Utils.Editor
             string description,
             Action<T> onOkPressed,
             string okButton = "OK",
-            string cancelButton = "Cancel")
-            where T : ScriptableObject
+            string cancelButton = "Cancel"
+        ) where T : ScriptableObject
         {
             var buttons = new List<(string, Action<T>)>
             {
@@ -174,4 +173,37 @@ namespace Utils.Editor
         }
         #endregion Show()
     }
+}
+
+
+[Serializable]
+public class Bool : ScriptableObject
+{
+    [SerializeField] private bool _value;
+
+    public bool Value => _value;
+}
+
+[Serializable]
+public class Int : ScriptableObject
+{
+    [SerializeField] private int _value;
+
+    public int Value => _value;
+}
+
+[Serializable]
+public class Float : ScriptableObject
+{
+    [SerializeField] private float _value;
+
+    public float Value => _value;
+}
+
+[Serializable]
+public class String : ScriptableObject
+{
+    [SerializeField] private string _value;
+
+    public string Value => _value;
 }
