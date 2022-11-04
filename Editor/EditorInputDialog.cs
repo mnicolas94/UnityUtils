@@ -113,7 +113,8 @@ namespace Utils.Editor
             string title,
             string description,
             List<(string, Action<T>)> buttons,
-            Action<T> submitAction
+            Action<T> submitAction,
+            bool modal = false
         ) where T : ScriptableObject
         {
             var maxPos = GUIUtility.GUIToScreenPoint(new Vector2(Screen.width, Screen.height));
@@ -132,17 +133,26 @@ namespace Utils.Editor
                 var (text, action) = tuple;
                 return (text, () => action?.Invoke(output));
             });
-            window.Show();
+
+            if (modal)
+            {
+                window.ShowModal();
+            }
+            else
+            {
+                window.Show();
+            }
         }
         
         public static void Show<T>(
             string title,
             string description,
-            List<(string, Action<T>)> buttons
+            List<(string, Action<T>)> buttons,
+            bool modal = false
         ) where T : ScriptableObject
         {
             var submitAction = buttons.Count > 0 ? buttons[0].Item2 : null;
-            Show(title, description, buttons, submitAction);
+            Show(title, description, buttons, submitAction, modal);
         }
         
         public static void Show<T>(
@@ -150,7 +160,8 @@ namespace Utils.Editor
             string description,
             Action<T> onOkPressed,
             string okButton = "OK",
-            string cancelButton = "Cancel"
+            string cancelButton = "Cancel",
+            bool modal = false
         ) where T : ScriptableObject
         {
             var buttons = new List<(string, Action<T>)>
@@ -158,7 +169,7 @@ namespace Utils.Editor
                 (okButton, onOkPressed),
                 (cancelButton, null)
             };
-            Show(title, description, buttons);
+            Show(title, description, buttons, modal);
         }
         
         public static void ShowMessage(
