@@ -1,134 +1,177 @@
-﻿﻿using System;
- using System.Collections.Generic;
- using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
- 
- /// <summary>
- /// Code taken from https://forum.unity.com/threads/is-there-a-way-to-input-text-using-a-unity-editor-utility.473743/#post-7229248
- /// </summary>
-public class EditorInputDialog : EditorWindow
+using Utils.Editor.EditorGUIUtils;
+
+namespace Utils.Editor
 {
-    string  description, inputText;
-    string  okButton, cancelButton;
-    bool    initializedPosition = false;
-    Action  onOKButton;
- 
-    bool    shouldClose = false;
-    Vector2 maxScreenPos;
- 
-    #region OnGUI()
-    void OnGUI()
+    /// <summary>
+    /// Code partially taken from https://forum.unity.com/threads/is-there-a-way-to-input-text-using-a-unity-editor-utility.473743/#post-7229248
+    /// </summary>
+    public class EditorInputDialog : EditorWindow
     {
-        // Check if Esc/Return have been pressed
-        var e = Event.current;
-        if( e.type == EventType.KeyDown )
-        {
-            switch( e.keyCode )
-            {
-                // Escape pressed
-                case KeyCode.Escape:
-                    shouldClose = true;
-                    e.Use();
-                    break;
+        private string _description;
+        private SerializedObject _target;
+        private bool _initializedPosition = false;
+        private Action _submitAction;
+        private List<(string, Action)> _buttons;
  
-                // Enter pressed
-                case KeyCode.Return:
-                case KeyCode.KeypadEnter:
-                    onOKButton?.Invoke();
-                    shouldClose = true;
-                    e.Use();
-                    break;
+        private bool _shouldClose = false;
+        private Vector2 _maxScreenPos;
+ 
+        #region OnGUI()
+        void OnGUI()
+        {
+            // Check if Esc/Return have been pressed
+            var e = Event.current;
+            if(e.type == EventType.KeyDown)
+            {
+                switch( e.keyCode )
+                {
+                    // Escape pressed
+                    case KeyCode.Escape:
+                        _shouldClose = true;
+                        e.Use();
+                        break;
+ 
+                    // Enter pressed
+                    case KeyCode.Return:
+                    case KeyCode.KeypadEnter:
+                        _submitAction?.Invoke();
+                        _shouldClose = true;
+                        e.Use();
+                        break;
+                }
+            }
+ 
+            if(_shouldClose) {  // Close this dialog
+                Close();
+            }
+
+            // Draw our control
+            var rect = EditorGUILayout.BeginVertical();
+ 
+            EditorGUILayout.Space(12);
+            
+            var style = new GUIStyle(EditorStyles.label)
+            {
+                wordWrap = true
+            };
+            EditorGUILayout.LabelField(_description, style);
+            
+            EditorGUILayout.Space(8);
+            GUIUtils.DrawSerializedObject(_target);
+            EditorGUILayout.Space(12);
+ 
+            // Draw OK / Cancel buttons
+            var r = EditorGUILayout.GetControlRect();
+            var buttonWidth = r.width / _buttons.Count;
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                var (text, action) = _buttons[i];
+                var x = r.x + i * buttonWidth;
+                var buttonRect = new Rect(x, r.y, buttonWidth, r.height);
+                if( GUI.Button(buttonRect, text))
+                {
+                    action?.Invoke();
+                    _shouldClose = true;
+                }
+            }
+ 
+            EditorGUILayout.Space(8);
+            EditorGUILayout.EndVertical();
+ 
+            // Force change size of the window
+            if(rect.width != 0 && minSize != rect.size) {
+                minSize = maxSize = rect.size;
+            }
+ 
+            // Set dialog position next to mouse position
+            if(!_initializedPosition && e.type == EventType.Layout)
+            {
+                _initializedPosition = true;
+ 
+                // Move window to a new position. Make sure we're inside visible window
+                var mousePos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
+                mousePos.x += 32;
+                if(mousePos.x + position.width > _maxScreenPos.x) mousePos.x -= position.width + 64; // Display on left side of mouse
+                if(mousePos.y + position.height > _maxScreenPos.y) mousePos.y = _maxScreenPos.y - position.height;
+ 
+                position = new Rect(mousePos.x, mousePos.y, position.width, position.height);
+ 
+                // Focus current window
+                Focus();
             }
         }
+        #endregion OnGUI()
  
-        if( shouldClose ) {  // Close this dialog
-            Close();
-            //return;
-        }
- 
-        // Draw our control
-        var rect = EditorGUILayout.BeginVertical();
- 
-        EditorGUILayout.Space( 12 );
-        EditorGUILayout.LabelField( description );
-
-        EditorGUILayout.Space( 8 );
-        GUI.SetNextControlName( "inText" );
-        inputText = EditorGUILayout.TextField( "", inputText );
-        GUI.FocusControl( "inText" );   // Focus text field
-        EditorGUILayout.Space( 12 );
- 
-        // Draw OK / Cancel buttons
-        var r = EditorGUILayout.GetControlRect();
-        r.width /= 2;
-        if( GUI.Button( r, okButton ) ) {
-            onOKButton?.Invoke();
-            shouldClose = true;
-        }
- 
-        r.x += r.width;
-        if( GUI.Button( r, cancelButton ) ) {
-            inputText = null;   // Cancel - delete inputText
-            shouldClose = true;
-        }
- 
-        EditorGUILayout.Space( 8 );
-        EditorGUILayout.EndVertical();
- 
-        // Force change size of the window
-        if( rect.width != 0 && minSize != rect.size ) {
-            minSize = maxSize = rect.size;
-        }
- 
-        // Set dialog position next to mouse position
-        if( !initializedPosition && e.type == EventType.Layout )
+        #region Show()
+    
+        public static void Show<T>(
+            string title,
+            string description,
+            List<(string, Action<T>)> buttons,
+            Action<T> submitAction
+            )
+            where T : ScriptableObject
         {
-            initializedPosition = true;
- 
-            // Move window to a new position. Make sure we're inside visible window
-            var mousePos = GUIUtility.GUIToScreenPoint( Event.current.mousePosition );
-            mousePos.x += 32;
-            if( mousePos.x + position.width > maxScreenPos.x ) mousePos.x -= position.width + 64; // Display on left side of mouse
-            if( mousePos.y + position.height > maxScreenPos.y ) mousePos.y = maxScreenPos.y - position.height;
- 
-            position = new Rect( mousePos.x, mousePos.y, position.width, position.height );
- 
-            // Focus current window
-            Focus();
+            var maxPos = GUIUtility.GUIToScreenPoint( new Vector2( Screen.width, Screen.height ) );
+
+            var output = CreateInstance<T>();
+            var so = new SerializedObject(output);
+        
+            var window = CreateInstance<EditorInputDialog>();
+            window._maxScreenPos = maxPos;
+            window.titleContent = new GUIContent( title );
+            window._description = description;
+            window._target = so;
+            window._submitAction = () => submitAction?.Invoke(output);
+            window._buttons = buttons.ConvertAll<(string, Action)>(tuple =>
+            {
+                var (text, action) = tuple;
+                return (text, () => action?.Invoke(output));
+            });
+            window.Show();
         }
+        
+        public static void Show<T>(
+            string title,
+            string description,
+            List<(string, Action<T>)> buttons
+        )
+            where T : ScriptableObject
+        {
+            var submitAction = buttons.Count > 0 ? buttons[0].Item2 : null;
+            Show(title, description, buttons, submitAction);
+        }
+        
+        public static void Show<T>(
+            string title,
+            string description,
+            Action<T> onOkPressed,
+            string okButton = "OK",
+            string cancelButton = "Cancel")
+            where T : ScriptableObject
+        {
+            var buttons = new List<(string, Action<T>)>
+            {
+                (okButton, onOkPressed),
+                (cancelButton, null)
+            };
+            Show(title, description, buttons);
+        }
+        
+        public static void ShowMessage(
+            string title,
+            string message)
+        {
+            var buttons = new List<(string, Action<ScriptableObject>)>
+            {
+                ("Ok", null)
+            };
+            Show(title, message, buttons);
+        }
+        #endregion Show()
     }
-    #endregion OnGUI()
- 
-    #region Show()
-    /// <summary>
-    /// Returns text player entered, or null if player cancelled the dialog.
-    /// </summary>
-    /// <param name="title"></param>
-    /// <param name="description"></param>
-    /// <param name="inputText"></param>
-    /// <param name="okButton"></param>
-    /// <param name="cancelButton"></param>
-    /// <returns></returns>
-    public static string Show( string title, string description, string inputText, string okButton = "OK", string cancelButton = "Cancel" )
-    {
-        // Make sure our popup is always inside parent window, and never offscreen
-        // So get caller's window size
-        var maxPos = GUIUtility.GUIToScreenPoint( new Vector2( Screen.width, Screen.height ) );
- 
-        string ret = null;
-        //var window = EditorWindow.GetWindow<InputDialog>();
-        var window = CreateInstance<EditorInputDialog>();
-        window.maxScreenPos = maxPos;
-        window.titleContent = new GUIContent( title );
-        window.description = description;
-        window.inputText = inputText;
-        window.okButton = okButton;
-        window.cancelButton = cancelButton;
-        window.onOKButton += () => ret = window.inputText;
-        //window.ShowPopup();
-        window.ShowModal();
- 
-        return ret;
-    }
-    #endregion Show()
 }
