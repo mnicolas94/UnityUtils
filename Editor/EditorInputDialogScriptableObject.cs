@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
 using UnityEditor;
 using UnityEngine;
 using Utils.Editor.EditorGUIUtils;
@@ -12,10 +14,9 @@ namespace Utils.Editor
     {
         private string _description;
         private SerializedObject _target;
-        private string _okButton;
-        private string _cancelButton;
         private bool _initializedPosition = false;
-        private Action _onOkButton;
+        private Action _submitAction;
+        private List<(string, Action)> _buttons;
  
         private bool _shouldClose = false;
         private Vector2 _maxScreenPos;
@@ -25,7 +26,7 @@ namespace Utils.Editor
         {
             // Check if Esc/Return have been pressed
             var e = Event.current;
-            if( e.type == EventType.KeyDown )
+            if(e.type == EventType.KeyDown)
             {
                 switch( e.keyCode )
                 {
@@ -38,62 +39,67 @@ namespace Utils.Editor
                     // Enter pressed
                     case KeyCode.Return:
                     case KeyCode.KeypadEnter:
-                        _onOkButton?.Invoke();
+                        _submitAction?.Invoke();
                         _shouldClose = true;
                         e.Use();
                         break;
                 }
             }
  
-            if( _shouldClose ) {  // Close this dialog
+            if(_shouldClose) {  // Close this dialog
                 Close();
-                //return;
             }
 
             // Draw our control
             var rect = EditorGUILayout.BeginVertical();
  
-            EditorGUILayout.Space( 12 );
-            EditorGUILayout.LabelField( _description );
-
-            EditorGUILayout.Space( 8 );
+            EditorGUILayout.Space(12);
+            
+            var style = new GUIStyle(EditorStyles.label)
+            {
+                wordWrap = true
+            };
+            EditorGUILayout.LabelField(_description, style);
+            
+            EditorGUILayout.Space(8);
             GUIUtils.DrawSerializedObject(_target);
-            EditorGUILayout.Space( 12 );
+            EditorGUILayout.Space(12);
  
             // Draw OK / Cancel buttons
             var r = EditorGUILayout.GetControlRect();
-            r.width /= 2;
-            if( GUI.Button( r, _okButton ) ) {
-                _onOkButton?.Invoke();
-                _shouldClose = true;
+            var buttonWidth = r.width / _buttons.Count;
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                var (text, action) = _buttons[i];
+                var x = r.x + i * buttonWidth;
+                var buttonRect = new Rect(x, r.y, buttonWidth, r.height);
+                if( GUI.Button(buttonRect, text))
+                {
+                    action?.Invoke();
+                    _shouldClose = true;
+                }
             }
  
-            r.x += r.width;
-            if( GUI.Button( r, _cancelButton ) ) {
-//            _inputText = null;   // Cancel - delete inputText
-                _shouldClose = true;
-            }
- 
-            EditorGUILayout.Space( 8 );
+            EditorGUILayout.Space(8);
             EditorGUILayout.EndVertical();
  
             // Force change size of the window
-            if( rect.width != 0 && minSize != rect.size ) {
+            if(rect.width != 0 && minSize != rect.size) {
                 minSize = maxSize = rect.size;
             }
  
             // Set dialog position next to mouse position
-            if( !_initializedPosition && e.type == EventType.Layout )
+            if(!_initializedPosition && e.type == EventType.Layout)
             {
                 _initializedPosition = true;
  
                 // Move window to a new position. Make sure we're inside visible window
-                var mousePos = GUIUtility.GUIToScreenPoint( Event.current.mousePosition );
+                var mousePos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
                 mousePos.x += 32;
-                if( mousePos.x + position.width > _maxScreenPos.x ) mousePos.x -= position.width + 64; // Display on left side of mouse
-                if( mousePos.y + position.height > _maxScreenPos.y ) mousePos.y = _maxScreenPos.y - position.height;
+                if(mousePos.x + position.width > _maxScreenPos.x) mousePos.x -= position.width + 64; // Display on left side of mouse
+                if(mousePos.y + position.height > _maxScreenPos.y) mousePos.y = _maxScreenPos.y - position.height;
  
-                position = new Rect( mousePos.x, mousePos.y, position.width, position.height );
+                position = new Rect(mousePos.x, mousePos.y, position.width, position.height);
  
                 // Focus current window
                 Focus();
@@ -106,9 +112,9 @@ namespace Utils.Editor
         public static void Show<T>(
             string title,
             string description,
-            Action<T> onOkPressed,
-            string okButton = "OK",
-            string cancelButton = "Cancel")
+            List<(string, Action<T>)> buttons,
+            Action<T> submitAction
+            )
             where T : ScriptableObject
         {
             var maxPos = GUIUtility.GUIToScreenPoint( new Vector2( Screen.width, Screen.height ) );
@@ -121,10 +127,51 @@ namespace Utils.Editor
             window.titleContent = new GUIContent( title );
             window._description = description;
             window._target = so;
-            window._okButton = okButton;
-            window._cancelButton = cancelButton;
-            window._onOkButton = () => onOkPressed?.Invoke(output);
+            window._submitAction = () => submitAction?.Invoke(output);
+            window._buttons = buttons.ConvertAll<(string, Action)>(tuple =>
+            {
+                var (text, action) = tuple;
+                return (text, () => action?.Invoke(output));
+            });
             window.Show();
+        }
+        
+        public static void Show<T>(
+            string title,
+            string description,
+            List<(string, Action<T>)> buttons
+        )
+            where T : ScriptableObject
+        {
+            var submitAction = buttons.Count > 0 ? buttons[0].Item2 : null;
+            Show(title, description, buttons, submitAction);
+        }
+        
+        public static void Show<T>(
+            string title,
+            string description,
+            Action<T> onOkPressed,
+            string okButton = "OK",
+            string cancelButton = "Cancel")
+            where T : ScriptableObject
+        {
+            var buttons = new List<(string, Action<T>)>
+            {
+                (okButton, onOkPressed),
+                (cancelButton, null)
+            };
+            Show(title, description, buttons);
+        }
+        
+        public static void ShowMessage(
+            string title,
+            string message)
+        {
+            var buttons = new List<(string, Action<ScriptableObject>)>
+            {
+                ("Ok", null)
+            };
+            Show(title, message, buttons);
         }
         #endregion Show()
     }
