@@ -172,6 +172,20 @@ namespace Utils.Editor
             Show(title, description, buttons, modal);
         }
         
+        public static T ShowModal<T>(
+            string title,
+            string description,
+            string okButton = "OK",
+            string cancelButton = "Cancel"
+        ) where T : ScriptableObject
+        {
+            T output = null;
+            void OkAction(T o) => output = o;
+            Show(title, description, (Action<T>) OkAction, okButton, cancelButton, true);
+
+            return output;
+        }
+        
         public static void ShowMessage(
             string title,
             string message)
