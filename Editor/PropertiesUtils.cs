@@ -1,16 +1,46 @@
 ﻿using System;
+using System.Collections;
 using System.Reflection;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
 namespace Utils.Editor
 {
-
+    /// <summary>
+    /// This code was taken from https://github.com/dbrizov/NaughtyAttributes
+    /// </summary>
     public static class PropertiesUtils
     {
         /// <summary>
-        /// This code was taken from https://github.com/dbrizov/NaughtyAttributes
+        /// Gets the object that the property is a member of
         /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static object GetTargetObjectWithProperty(SerializedProperty property)
+        {
+            string path = property.propertyPath.Replace(".Array.data[", "[");
+            object obj = property.serializedObject.targetObject;
+            string[] elements = path.Split('.');
+
+            for (int i = 0; i < elements.Length - 1; i++)
+            {
+                string element = elements[i];
+                if (element.Contains("["))
+                {
+                    string elementName = element.Substring(0, element.IndexOf("["));
+                    int index = Convert.ToInt32(element.Substring(element.IndexOf("[")).Replace("[", "").Replace("]", ""));
+                    obj = GetValue_Imp(obj, elementName, index);
+                }
+                else
+                {
+                    obj = GetValue_Imp(obj, element);
+                }
+            }
+
+            return obj;
+        }
+        
+        
         public static object GetTargetObjectOfProperty(SerializedProperty prop)
         {
             if (prop == null) return null;
@@ -34,44 +64,53 @@ namespace Utils.Editor
             return obj;
         }
         
-        /// <summary>
-        /// This code was taken from https://github.com/dbrizov/NaughtyAttributes
-        /// </summary>
-        private static object GetValue_Imp(object source, string name, int index)
-        {
-            var enumerable = GetValue_Imp(source, name) as System.Collections.IEnumerable;
-            if (enumerable == null) return null;
-            var enm = enumerable.GetEnumerator();
-
-            for (int i = 0; i <= index; i++)
-            {
-                if (!enm.MoveNext()) return null;
-            }
-            return enm.Current;
-        }
-        
-        /// <summary>
-        /// This code was taken from https://github.com/dbrizov/NaughtyAttributes
-        /// </summary>
         private static object GetValue_Imp(object source, string name)
         {
             if (source == null)
+            {
                 return null;
-            var type = source.GetType();
+            }
+
+            Type type = source.GetType();
 
             while (type != null)
             {
-                var f = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-                if (f != null)
-                    return f.GetValue(source);
+                FieldInfo field = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                if (field != null)
+                {
+                    return field.GetValue(source);
+                }
 
-                var p = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                if (p != null)
-                    return p.GetValue(source, null);
+                PropertyInfo property = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                if (property != null)
+                {
+                    return property.GetValue(source, null);
+                }
 
                 type = type.BaseType;
             }
+
             return null;
+        }
+
+        private static object GetValue_Imp(object source, string name, int index)
+        {
+            IEnumerable enumerable = GetValue_Imp(source, name) as IEnumerable;
+            if (enumerable == null)
+            {
+                return null;
+            }
+
+            IEnumerator enumerator = enumerable.GetEnumerator();
+            for (int i = 0; i <= index; i++)
+            {
+                if (!enumerator.MoveNext())
+                {
+                    return null;
+                }
+            }
+
+            return enumerator.Current;
         }
     }
 }
