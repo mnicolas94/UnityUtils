@@ -13,53 +13,22 @@ namespace Utils.Input
         [SerializeField] private List<SchemeEvent> _events;
         [SerializeField] private bool _triggerOnStart;
         
-        private DefaultInputActions _actions;
-        private DefaultInputActions Actions => _actions ??= new DefaultInputActions();
-        private InputControlScheme _lastScheme;
-        
         private void Start()
         {
-            var mapUi = Actions.asset.FindActionMap("UI");
-            var mapPlayer = Actions.asset.FindActionMap("Player");
-            mapUi.Enable();
-            mapPlayer.Enable();
-            mapUi.actionTriggered += OnActionTriggered;
-            mapPlayer.actionTriggered += OnActionTriggered;
-
             if (_triggerOnStart)
             {
-                var device = Actions.asset.actionMaps[0].actions[0].activeControl.device;
-                var scheme = Actions.controlSchemes.First(scheme => scheme.SupportsDevice(device));
-                Debug.Log(scheme);
-                NotifyScheme(scheme);
+                CallEvents(InputSchemeObserverAsset.Instance.CurrentScheme);
             }
         }
 
         private void OnEnable()
         {
-            Actions.Enable();
+            InputSchemeObserverAsset.Instance.OnSchemeChanged += CallEvents;
         }
 
         private void OnDisable()
         {
-            Actions.Disable();
-        }
-
-        private void OnActionTriggered(InputAction.CallbackContext ctx)
-        {
-            var device = ctx.control.device;
-            var scheme = Actions.controlSchemes.First(scheme => scheme.SupportsDevice(device));
-
-            if (_lastScheme == scheme)
-                return;
-
-            NotifyScheme(scheme);
-        }
-
-        private void NotifyScheme(InputControlScheme scheme)
-        {
-            _lastScheme = scheme;
-            CallEvents(scheme);
+            InputSchemeObserverAsset.Instance.OnSchemeChanged -= CallEvents;
         }
 
         private void CallEvents(InputControlScheme scheme)
