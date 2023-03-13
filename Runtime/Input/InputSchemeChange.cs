@@ -11,6 +11,7 @@ namespace Utils.Input
     public class InputSchemeChange : MonoBehaviour
     {
         [SerializeField] private List<SchemeEvent> _events;
+        [SerializeField] private bool _triggerOnStart;
         
         private DefaultInputActions _actions;
         private DefaultInputActions Actions => _actions ??= new DefaultInputActions();
@@ -24,6 +25,14 @@ namespace Utils.Input
             mapPlayer.Enable();
             mapUi.actionTriggered += OnActionTriggered;
             mapPlayer.actionTriggered += OnActionTriggered;
+
+            if (_triggerOnStart)
+            {
+                var device = Actions.asset.actionMaps[0].actions[0].activeControl.device;
+                var scheme = Actions.controlSchemes.First(scheme => scheme.SupportsDevice(device));
+                Debug.Log(scheme);
+                NotifyScheme(scheme);
+            }
         }
 
         private void OnEnable()
@@ -44,6 +53,11 @@ namespace Utils.Input
             if (_lastScheme == scheme)
                 return;
 
+            NotifyScheme(scheme);
+        }
+
+        private void NotifyScheme(InputControlScheme scheme)
+        {
             _lastScheme = scheme;
             CallEvents(scheme);
         }
