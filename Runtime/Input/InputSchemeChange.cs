@@ -12,17 +12,13 @@ namespace Utils.Input
         [SerializeField] private List<SchemeEvent> _events;
         [SerializeField] private bool _triggerOnStart;
         
-        private void Start()
-        {
-            if (_triggerOnStart)
-            {
-                CallEvents(InputSchemeObserverAsset.Instance.CurrentScheme);
-            }
-        }
-
         private void OnEnable()
         {
             InputSchemeObserverAsset.Instance.OnSchemeChanged += CallEvents;
+            if (_triggerOnStart)
+            {
+                CallCurrentSchemeEvents();
+            }
         }
 
         private void OnDisable()
@@ -30,6 +26,11 @@ namespace Utils.Input
             InputSchemeObserverAsset.Instance.OnSchemeChanged -= CallEvents;
         }
 
+        private void CallCurrentSchemeEvents()
+        {
+            CallEvents(InputSchemeObserverAsset.Instance.CurrentScheme);
+        }
+        
         private void CallEvents(InputControlScheme scheme)
         {
             foreach (var schemeEvent in _events)
