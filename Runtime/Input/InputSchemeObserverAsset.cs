@@ -34,7 +34,7 @@ namespace Utils.Input
                 return;
 
             _currentScheme = scheme;
-            OnSchemeChanged(scheme);
+            OnSchemeChanged?.Invoke(scheme);
         }
     }
 }
