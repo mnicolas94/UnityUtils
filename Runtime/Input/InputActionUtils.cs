@@ -36,12 +36,13 @@ namespace Utils.Input
             return inputAction;
         }
         
-        public static InputAction GetPointAction()
+        public static InputAction GetPointAction(bool singleTouch = true, InputActionType inputActionType = InputActionType.Value)
         {
-            var inputAction = new InputAction("Point", InputActionType.PassThrough);
+            var touchPath = singleTouch ? "<Touchscreen>/touch0/position" : "<Touchscreen>/touch*/position";
+            var inputAction = new InputAction("Point", inputActionType);
             inputAction.AddBinding("<Mouse>/position", groups: "Keyboard&Mouse");
             inputAction.AddBinding("<Pen>/position", groups: "Keyboard&Mouse");
-            inputAction.AddBinding("<Touchscreen>/touch*/position", groups: "Touch");
+            inputAction.AddBinding(touchPath, groups: "Touch");
 
             return inputAction;
         }
