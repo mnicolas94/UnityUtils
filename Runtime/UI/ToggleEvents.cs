@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Utils.UI
+namespace Utils.UI    
 {
     public class ToggleEvents : MonoBehaviour
     {
