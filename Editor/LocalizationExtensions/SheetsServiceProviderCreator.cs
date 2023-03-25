@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Localization;
@@ -90,11 +91,13 @@ namespace Utils.Editor.LocalizationExtensions
         
                 using var reader = new StreamReader(file);
                 var json = reader.ReadToEnd();
-                credentials = JsonUtility.FromJson<CredentialsPersistentSettings>(json);
+                credentials = ScriptableObject.CreateInstance<CredentialsPersistentSettings>();
+                JsonUtility.FromJsonOverwrite(json, credentials);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                Debug.Log(e.Message);
                 credentials = null;
                 return false;
             }
