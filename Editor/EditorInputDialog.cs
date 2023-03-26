@@ -185,6 +185,15 @@ namespace Utils.Editor
 
             return output;
         }
+
+        public static bool ShowYesNoDialog(string title, string description)
+        {
+            bool output = false;
+            void OkAction(ScriptableObject so) => output = true;
+            Show(title, description, (Action<ScriptableObject>) OkAction, "Yes", "No", true);
+
+            return output;
+        }
         
         public static void ShowMessage(
             string title,
