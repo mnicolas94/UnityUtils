@@ -201,6 +201,7 @@ namespace Utils.Editor.AttributeDrawers
                 // TODO: Problem with structs, because they are value type.
                 // The solution is to make boxing/unboxing but unfortunately I don't know the compile time type of the target object
                 dropdownField.SetValue(target, newValue);
+                GUIUtility.hotControl = 0;
             }
         }
     }
