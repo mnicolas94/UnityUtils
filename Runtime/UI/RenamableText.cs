@@ -15,6 +15,8 @@ namespace Utils.UI
 
         [SerializeField] private UnityEvent<string> _onEdited;
 
+        public UnityEvent<string> OnEdited => _onEdited;
+
         private bool _isEditing;
 
         private CancellationTokenSource _cts;
