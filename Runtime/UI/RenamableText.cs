@@ -15,9 +15,15 @@ namespace Utils.UI
 
         [SerializeField] private UnityEvent<string> _onEdited;
 
+        private bool _isEditing;
+        
+        public TextMeshProUGUI Text => _text;
+
+        public TMP_InputField Input => _input;
+
         public UnityEvent<string> OnEdited => _onEdited;
 
-        private bool _isEditing;
+        public bool IsEditing => _isEditing;
 
         private CancellationTokenSource _cts;
 
