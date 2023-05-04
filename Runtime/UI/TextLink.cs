@@ -1,6 +1,8 @@
 ﻿﻿using System;
+ using System.Threading;
+ using System.Threading.Tasks;
  using TMPro;
-using UnityEngine;
+ using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UI
@@ -14,9 +16,28 @@ namespace UI
         private bool _hovered = false;
         private int _lastLinkIndex = -1;
 
+        private CancellationTokenSource _cts;
+
+        private void OnEnable()
+        {
+            _cts = new CancellationTokenSource();
+        }
+
+        private void OnDisable()
+        {
+            if (!_cts.IsCancellationRequested)
+            {
+                _cts.Cancel();
+            }
+
+            _cts.Dispose();
+            _cts = null;
+        }
+        
         private void Start()
         {
-            SetAllLinksToColor(normalLinkColor);
+            var ct = _cts.Token;
+            SetAllLinksColorWhenInitialized(ct);
         }
 
         private void Update()
@@ -76,6 +97,19 @@ namespace UI
             }
         }
 
+        private async void SetAllLinksColorWhenInitialized(CancellationToken ct)
+        {
+            while (textMessage.textInfo.linkCount == 0 && !ct.IsCancellationRequested)
+            {
+                await Task.Yield();
+            }
+
+            if (!ct.IsCancellationRequested)
+            {
+                SetAllLinksToColor(normalLinkColor);
+            }
+        }
+        
         private void SetAllLinksToColor(Color32 color)
         {
             var count = textMessage.textInfo.linkCount;
