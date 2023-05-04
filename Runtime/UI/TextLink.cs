@@ -1,4 +1,5 @@
-﻿﻿using TMPro;
+﻿﻿using System;
+ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,7 +13,12 @@ namespace UI
 
         private bool _hovered = false;
         private int _lastLinkIndex = -1;
-        
+
+        private void Start()
+        {
+            SetAllLinksToColor(normalLinkColor);
+        }
+
         private void Update()
         {
             HandleHighlighting();
@@ -67,6 +73,15 @@ namespace UI
                     SetLinkToColor(_lastLinkIndex, normalLinkColor);
                     _lastLinkIndex = -1;
                 }
+            }
+        }
+
+        private void SetAllLinksToColor(Color32 color)
+        {
+            var count = textMessage.textInfo.linkCount;
+            for (int i = 0; i < count; i++)
+            {
+                SetLinkToColor(i, color);
             }
         }
 
