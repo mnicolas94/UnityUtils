@@ -11,7 +11,7 @@ namespace Utils.Editor
     {
         private static List<Object> _pasteBin = new();
 
-        [MenuItem("Assets/Facticus/Utils/SubAssets management/CutAsset &x")]
+        [MenuItem("Assets/Facticus/Utils/SubAssets management/Copy asset &c")]
         public static void CutAssetObject()
         {
             var selected = GetSelectedAssets();
@@ -25,7 +25,7 @@ namespace Utils.Editor
             }
         }
 
-        [MenuItem("Assets/Facticus/Utils/SubAssets management/PasteIntoAsset &v")]
+        [MenuItem("Assets/Facticus/Utils/SubAssets management/Paste into asset &v")]
         public static void PasteIntoAsset()
         {
             var selection = Selection.GetFiltered<Object>(SelectionMode.Assets);
