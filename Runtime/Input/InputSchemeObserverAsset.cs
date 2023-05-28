@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if ENABLED_INPUTSYSTEM
+
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -38,3 +40,5 @@ namespace Utils.Input
         }
     }
 }
+
+#endif

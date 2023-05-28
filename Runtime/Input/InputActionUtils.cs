@@ -1,4 +1,6 @@
-﻿using UnityEngine.InputSystem;
+﻿#if ENABLED_INPUTSYSTEM
+
+using UnityEngine.InputSystem;
 
 namespace Utils.Input
 {
@@ -65,3 +67,5 @@ namespace Utils.Input
         }
     }
 }
+
+#endif
