@@ -5,10 +5,7 @@
   "description": "Unity utility functions and extensions",
   "unity": "",
   "unityRelease": "",
-  "dependencies": {
-    "com.unity.localization": "1.3.2",
-    "com.unity.inputsystem": "1.4.4"
-  },
+  "dependencies": {},
   "keywords": [],
   "author": {
     "name": "Facticus",
