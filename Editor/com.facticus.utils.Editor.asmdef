@@ -15,6 +15,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.localization",
+            "expression": "1.3.2",
+            "define": "ENABLED_LOCALIZATION"
+        }
+    ],
     "noEngineReferences": false
 }

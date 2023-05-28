@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if ENABLED_LOCALIZATION
+
+using System;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -120,3 +122,5 @@ namespace Utils.Editor.LocalizationExtensions
         }
     }
 }
+
+#endif
