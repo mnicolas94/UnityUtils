@@ -9,7 +9,7 @@ namespace Utils.Editor
 {
     public static class SubAssetsUtils
     {
-        private static List<Object> _pasteBin = new();
+        private static List<Object> _pasteBin = new List<Object>();
 
         [MenuItem("Assets/Facticus/Utils/SubAssets management/Copy asset &c")]
         public static void CutAssetObject()
