@@ -59,7 +59,7 @@ namespace Utils.Editor
             {
                 wordWrap = true
             };
-            EditorGUILayout.LabelField(_description, style);
+            EditorGUILayout.SelectableLabel(_description, style);
             
             EditorGUILayout.Space(8);
             GUIUtils.DrawSerializedObject(_target);
