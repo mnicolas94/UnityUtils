@@ -12,14 +12,18 @@ namespace Utils.Editor
     /// </summary>
     public class EditorInputDialog : EditorWindow
     {
+        private static readonly GUIStyle DescriptionStyle = new GUIStyle(EditorStyles.label)
+        {
+            wordWrap = true
+        };
+        
         private string _description;
         private SerializedObject _target;
-        private bool _initializedPosition = false;
         private Action _submitAction;
         private List<(string, Action)> _buttons;
  
+        private bool _initialized = false;
         private bool _shouldClose = false;
-        private Vector2 _maxScreenPos;
  
         #region OnGUI()
         void OnGUI()
@@ -51,21 +55,24 @@ namespace Utils.Editor
             }
 
             // Draw our control
-            var rect = EditorGUILayout.BeginVertical();
+            var totalHeight = 0f;
+            EditorGUILayout.BeginVertical();
  
-            EditorGUILayout.Space(12);
-            
-            var style = new GUIStyle(EditorStyles.label)
+            totalHeight += DrawSpace(12);
+
+            // draw description
+            if (!string.IsNullOrEmpty(_description))
             {
-                wordWrap = true
-            };
-            EditorGUILayout.SelectableLabel(_description, style);
+                EditorGUILayout.TextArea(_description, DescriptionStyle);
+                totalHeight += DescriptionStyle.CalcHeight(new GUIContent(_description), position.width);
+                totalHeight += DrawSpace(8);
+            }
             
-            EditorGUILayout.Space(8);
-            GUIUtils.DrawSerializedObject(_target);
-            EditorGUILayout.Space(12);
- 
-            // Draw OK / Cancel buttons
+            // draw data
+            totalHeight += GUIUtils.DrawSerializedObject(_target);
+            totalHeight += DrawSpace(12);
+            
+            // Draw buttons
             var r = EditorGUILayout.GetControlRect();
             var buttonWidth = r.width / _buttons.Count;
             for (int i = 0; i < _buttons.Count; i++)
@@ -79,32 +86,33 @@ namespace Utils.Editor
                     _shouldClose = true;
                 }
             }
+            // estimated height of buttons
+            totalHeight += EditorGUIUtility.singleLineHeight;
  
-            EditorGUILayout.Space(8);
+            totalHeight += DrawSpace(8);
             EditorGUILayout.EndVertical();
  
-            // Force change size of the window
-            if(rect.width != 0 && minSize != rect.size) {
-                minSize = maxSize = rect.size;
-            }
- 
-            // Set dialog position next to mouse position
-            if(!_initializedPosition && e.type == EventType.Layout)
+            // Try to change the size to match the content
+            if(!_initialized && e.type == EventType.Layout)
             {
-                _initializedPosition = true;
- 
-                // Move window to a new position. Make sure we're inside visible window
-                var mousePos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
-                mousePos.x += 32;
-                if(mousePos.x + position.width > _maxScreenPos.x) mousePos.x -= position.width + 64; // Display on left side of mouse
-                if(mousePos.y + position.height > _maxScreenPos.y) mousePos.y = _maxScreenPos.y - position.height;
- 
-                position = new Rect(mousePos.x, mousePos.y, position.width, position.height);
+                _initialized = true;
+
+                var newSize = new Vector2(position.width, totalHeight);
+                var diff = position.size - newSize;
+                var newPos = position.position + diff / 2;
+                position = new Rect(newPos, newSize);
  
                 // Focus current window
                 Focus();
             }
         }
+
+        private static float DrawSpace(float height)
+        {
+            EditorGUILayout.Space(height);
+            return height;
+        }
+
         #endregion OnGUI()
         
         #region Show()
@@ -117,13 +125,19 @@ namespace Utils.Editor
             bool modal = false
         ) where T : ScriptableObject
         {
-            var maxPos = GUIUtility.GUIToScreenPoint(new Vector2(Screen.width, Screen.height));
+            var screenSize = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
+            var size = screenSize / 3;
+            var pos = (screenSize - size) / 2;
+            var rect = new Rect(pos, size);
 
             var output = CreateInstance<T>();
             var so = new SerializedObject(output);
         
             var window = CreateInstance<EditorInputDialog>();
-            window._maxScreenPos = maxPos;
+            window._initialized = false;
+            // window.minSize = screenSize / 5;
+            window.maxSize = screenSize;
+            window.position = rect;
             window.titleContent = new GUIContent( title );
             window._description = description;
             window._target = so;

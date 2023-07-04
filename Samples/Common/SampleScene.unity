@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662acb063bcf4b8181e034d29265801f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _message: a message 12345. qwe
+  _message: message 123 sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 --- !u!4 &1368997046
 Transform:
   m_ObjectHideFlags: 0
