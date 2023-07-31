@@ -11,6 +11,8 @@ namespace Samples
         public void ShowMessage()
         {
             EditorInputDialog.ShowMessage("Message", _message);
+            
+            
         }
     }
 }

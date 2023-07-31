@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -13,6 +14,24 @@ namespace Utils.Editor
     /// </summary>
     public static class PropertiesUtils
     {
+        public static IEnumerable<SerializedProperty> GetSerializedProperties(
+            SerializedObject so, bool returnScript=false , bool recursive = false)
+        {
+            var iterator = so.GetIterator();
+            bool enterChildren = true;
+            while (iterator.NextVisible(enterChildren))
+            {
+                var sp = iterator.Copy();
+                bool isScript = sp.type.StartsWith("PPtr<MonoScript>");
+                if (!isScript || returnScript)
+                {
+                    yield return sp;
+                }
+                
+                enterChildren = recursive;
+            }
+        }
+        
         public static SerializedProperty FindParentProperty(this SerializedProperty serializedProperty)
         {
             var propertyPaths = serializedProperty.propertyPath.Split('.');
