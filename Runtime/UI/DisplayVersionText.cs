@@ -7,7 +7,7 @@ namespace Utils.UI
     {
         [Multiline(4)]
         private string _versionFormatString = "game v{v}";
-        private TMP_Text _text;
+        [SerializeField] private TMP_Text _text;
 
         void Start()
         {
