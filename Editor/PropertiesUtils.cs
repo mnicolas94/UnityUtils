@@ -32,6 +32,24 @@ namespace Utils.Editor
             }
         }
         
+        public static IEnumerable<SerializedProperty> GetSerializedProperties(
+            SerializedProperty originalSp, bool returnScript=false , bool recursive = false)
+        {
+            var iterator = originalSp.Copy();
+            bool enterChildren = true;
+            while (iterator.NextVisible(enterChildren))
+            {
+                var sp = iterator.Copy();
+                bool isScript = sp.type.StartsWith("PPtr<MonoScript>");
+                if (!isScript || returnScript)
+                {
+                    yield return sp;
+                }
+                
+                enterChildren = recursive;
+            }
+        }
+        
         public static SerializedProperty FindParentProperty(this SerializedProperty serializedProperty)
         {
             var propertyPaths = serializedProperty.propertyPath.Split('.');
