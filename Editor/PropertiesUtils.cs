@@ -36,9 +36,16 @@ namespace Utils.Editor
             SerializedProperty originalSp, bool returnScript=false , bool recursive = false)
         {
             var iterator = originalSp.Copy();
+            var originalDepth = iterator.depth;
             bool enterChildren = true;
             while (iterator.NextVisible(enterChildren))
             {
+                var isOutOfOriginalParent = iterator.depth <= originalDepth;
+                if (isOutOfOriginalParent)
+                {
+                    break;
+                }
+                
                 var sp = iterator.Copy();
                 bool isScript = sp.type.StartsWith("PPtr<MonoScript>");
                 if (!isScript || returnScript)
