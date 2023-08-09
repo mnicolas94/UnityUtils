@@ -203,6 +203,7 @@ namespace Utils.Editor.AttributeDrawers
                     selectedValueIndex,
                     (data, strings, selected) =>
                     {
+                        GUIUtility.ExitGUI();
                         object newValue = values[selected];
             
                         object dropdownValue = dropdownField.GetValue(target);
