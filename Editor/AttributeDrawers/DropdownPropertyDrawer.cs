@@ -191,7 +191,6 @@ namespace Utils.Editor.AttributeDrawers
             string label, int selectedValueIndex, object[] values, string[] displayOptions)
         {
             int newIndex = EditorGUI.Popup(rect, label, selectedValueIndex, displayOptions);
-            GUIUtility.ExitGUI();  // solve "should not grab hot control with an active capture" issue, i think
             object newValue = values[newIndex];
 
             object dropdownValue = dropdownField.GetValue(target);
