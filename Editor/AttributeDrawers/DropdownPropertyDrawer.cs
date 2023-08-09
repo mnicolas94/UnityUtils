@@ -193,7 +193,8 @@ namespace Utils.Editor.AttributeDrawers
         {
             var optionLabel = new GUIContent(displayOptions[selectedValueIndex]);
             var controlRect = EditorGUI.PrefixLabel(rect, new GUIContent(label));
-            var pressed = EditorGUI.DropdownButton(controlRect, optionLabel, FocusType.Passive);
+            // var pressed = EditorGUI.DropdownButton(controlRect, optionLabel, FocusType.Passive);
+            var pressed = GUI.Button(controlRect, optionLabel, EditorStyles.popup);
             if (pressed)
             {
                 var options = displayOptions.Select(option => new GUIContent(option)).ToArray();
