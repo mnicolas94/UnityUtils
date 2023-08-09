@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -190,18 +191,44 @@ namespace Utils.Editor.AttributeDrawers
             Rect rect, SerializedObject serializedObject, object target, FieldInfo dropdownField,
             string label, int selectedValueIndex, object[] values, string[] displayOptions)
         {
-            int newIndex = EditorGUI.Popup(rect, label, selectedValueIndex, displayOptions);
-            object newValue = values[newIndex];
-
-            object dropdownValue = dropdownField.GetValue(target);
-            if (dropdownValue == null || !dropdownValue.Equals(newValue))
+            var optionLabel = new GUIContent(displayOptions[selectedValueIndex]);
+            var controlRect = EditorGUI.PrefixLabel(rect, new GUIContent(label));
+            var pressed = EditorGUI.DropdownButton(controlRect, optionLabel, FocusType.Passive);
+            if (pressed)
             {
-                Undo.RecordObject(serializedObject.targetObject, "Dropdown");
-
-                // TODO: Problem with structs, because they are value type.
-                // The solution is to make boxing/unboxing but unfortunately I don't know the compile time type of the target object
-                dropdownField.SetValue(target, newValue);
+                var options = displayOptions.Select(option => new GUIContent(option)).ToArray();
+                EditorUtility.DisplayCustomMenu(
+                    controlRect,
+                    options,
+                    selectedValueIndex,
+                    (data, strings, selected) =>
+                    {
+                        object newValue = values[selected];
+            
+                        object dropdownValue = dropdownField.GetValue(target);
+                        if (dropdownValue == null || !dropdownValue.Equals(newValue))
+                        {
+                            Undo.RecordObject(serializedObject.targetObject, "Dropdown");
+            
+                            // TODO: Problem with structs, because they are value type.
+                            // The solution is to make boxing/unboxing but unfortunately I don't know the compile time type of the target object
+                            dropdownField.SetValue(target, newValue);
+                        }
+                    },
+                    null);
             }
+            // int newIndex = EditorGUI.Popup(rect, label, selectedValueIndex, displayOptions);
+            // object newValue = values[newIndex];
+            //
+            // object dropdownValue = dropdownField.GetValue(target);
+            // if (dropdownValue == null || !dropdownValue.Equals(newValue))
+            // {
+            //     Undo.RecordObject(serializedObject.targetObject, "Dropdown");
+            //
+            //     // TODO: Problem with structs, because they are value type.
+            //     // The solution is to make boxing/unboxing but unfortunately I don't know the compile time type of the target object
+            //     dropdownField.SetValue(target, newValue);
+            // }
         }
     }
 }
