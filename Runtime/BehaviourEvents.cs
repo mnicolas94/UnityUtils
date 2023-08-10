@@ -12,15 +12,15 @@ namespace Utils
         [SerializeField] private UnityEvent _onDisable;
         [SerializeField] private UnityEvent _onDestroy;
 
-        public UnityEvent OnAwake => _onAwake;
+        public UnityEvent OnAwakeEvent => _onAwake;
 
-        public UnityEvent OnStart => _onStart;
+        public UnityEvent OnStartEvent => _onStart;
 
-        public UnityEvent OnEnable1 => _onEnable;
+        public UnityEvent OnEnableEvent => _onEnable;
 
-        public UnityEvent OnDisable1 => _onDisable;
+        public UnityEvent OnDisableEvent => _onDisable;
 
-        public UnityEvent OnDestroy1 => _onDestroy;
+        public UnityEvent OnDestroyEvent => _onDestroy;
 
         private void Awake()
         {
