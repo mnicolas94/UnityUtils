@@ -24,27 +24,27 @@ namespace Utils
 
         private void Awake()
         {
-            _onAwake.Invoke();
+            _onAwake?.Invoke();
         }
 
         private void Start()
         {
-            _onStart.Invoke();
+            _onStart?.Invoke();
         }
 
         private void OnEnable()
         {
-            _onEnable.Invoke();
+            _onEnable?.Invoke();
         }
 
         private void OnDisable()
         {
-            _onDisable.Invoke();
+            _onDisable?.Invoke();
         }
 
         private void OnDestroy()
         {
-            _onDestroy.Invoke();
+            _onDestroy?.Invoke();
         }
     }
 }
