@@ -221,7 +221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c7fd2f8f85bbed4793d3e918c018670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _value: C
+  _value: A
   _managed:
     rid: 3334507223179853848
   references:
