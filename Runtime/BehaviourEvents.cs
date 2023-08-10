@@ -6,11 +6,11 @@ namespace Utils
 {
     public class BehaviourEvents : MonoBehaviour
     {
-        [SerializeField] private UnityEvent _onAwake;
-        [SerializeField] private UnityEvent _onStart;
-        [SerializeField] private UnityEvent _onEnable;
-        [SerializeField] private UnityEvent _onDisable;
-        [SerializeField] private UnityEvent _onDestroy;
+        [SerializeField] private UnityEvent _onAwake = new UnityEvent();
+        [SerializeField] private UnityEvent _onStart = new UnityEvent();
+        [SerializeField] private UnityEvent _onEnable = new UnityEvent();
+        [SerializeField] private UnityEvent _onDisable = new UnityEvent();
+        [SerializeField] private UnityEvent _onDestroy = new UnityEvent();
 
         public UnityEvent OnAwakeEvent => _onAwake;
 
@@ -24,27 +24,27 @@ namespace Utils
 
         private void Awake()
         {
-            _onAwake?.Invoke();
+            _onAwake.Invoke();
         }
 
         private void Start()
         {
-            _onStart?.Invoke();
+            _onStart.Invoke();
         }
 
         private void OnEnable()
         {
-            _onEnable?.Invoke();
+            _onEnable.Invoke();
         }
 
         private void OnDisable()
         {
-            _onDisable?.Invoke();
+            _onDisable.Invoke();
         }
 
         private void OnDestroy()
         {
-            _onDestroy?.Invoke();
+            _onDestroy.Invoke();
         }
     }
 }
