@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utils
+namespace Utils.Behaviours
 {
     public class PlatformBasedAvailability : MonoBehaviour
     {
