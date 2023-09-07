@@ -1005,6 +1005,10 @@ MonoBehaviour:
   _animatorParamInt: 1418679382
   _animatorParamBool: 1872713598
   _animatorParamTrigger: -518763959
+  _animatorLayerString: TestLayer2
+  _animatorLayerInt: 2
+  _animatorStateString: SubMachineState1
+  _animatorStateInt: 230280877
 --- !u!95 &1611989256
 Animator:
   serializedVersion: 4
