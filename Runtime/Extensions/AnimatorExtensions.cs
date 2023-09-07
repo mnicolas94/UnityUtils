@@ -60,5 +60,22 @@ namespace Utils.Extensions
                 await Task.Yield();
             }
         }
+        
+        
+        public static async Task WaitUntilTransitionIsAtAsync(this Animator animator, int layerIndex, int transitionHash, float percent, CancellationToken ct)
+        {
+            var isCurrent = animator.IsCurrentTransition(layerIndex, transitionHash);
+            var reachedTime = false;
+            var transitionIsCompleted = false;
+            while (!reachedTime && !transitionIsCompleted && !ct.IsCancellationRequested)
+            {
+                var transition = animator.GetAnimatorTransitionInfo(layerIndex);
+                var newIsCurrent = animator.IsCurrentTransition(layerIndex, transitionHash);
+                transitionIsCompleted = isCurrent && !newIsCurrent;
+                isCurrent = newIsCurrent;
+                reachedTime = isCurrent && transition.normalizedTime >= percent;
+                await Task.Yield();
+            }
+        }
     }
 }
