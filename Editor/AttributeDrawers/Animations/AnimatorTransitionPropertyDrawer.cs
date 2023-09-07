@@ -10,16 +10,16 @@ using Utils.Extensions;
 
 namespace Utils.Editor.AttributeDrawers.Animations
 {
-    [CustomPropertyDrawer(typeof(AnimatorStateAttribute))]
-    public class AnimatorStatePropertyDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(AnimatorTransitionAttribute))]
+    public class AnimatorTransitionPropertyDrawer : PropertyDrawer
     {
         private const string InvalidAnimatorControllerWarningMessage = "Target animator controller is null";
         private const string InvalidTypeWarningMessage = "{0} must be an int or a string";
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            var animatorStateAttribute = (AnimatorStateAttribute) attribute;
-            bool validAnimatorController = GetAnimatorController(property, animatorStateAttribute.AnimatorName) != null;
+            var animatorTransitionAttribute = (AnimatorTransitionAttribute) attribute;
+            bool validAnimatorController = GetAnimatorController(property, animatorTransitionAttribute.AnimatorName) != null;
             bool validPropertyType = property.propertyType is SerializedPropertyType.Integer or SerializedPropertyType.String;
 
             var normalHeight = EditorGUI.GetPropertyHeight(property, includeChildren: true);
@@ -34,24 +34,24 @@ namespace Utils.Editor.AttributeDrawers.Animations
         {
             EditorGUI.BeginProperty(rect, label, property);
 
-            var animatorStateAttribute = (AnimatorStateAttribute) attribute;
+            var animatorTransitionAttribute = (AnimatorTransitionAttribute) attribute;
 
-            var animatorController = GetAnimatorController(property, animatorStateAttribute.AnimatorName);
+            var animatorController = GetAnimatorController(property, animatorTransitionAttribute.AnimatorName);
             if (animatorController == null)
             {
                 GUIUtils.DrawDefaultPropertyAndHelpBox(rect, property, InvalidAnimatorControllerWarningMessage);
                 return;
             }
 
-            var animatorStates = animatorController.GetStates();
+            var animatorTransitions = animatorController.GetStateTransitionsWithSource();
 
             switch (property.propertyType)
             {
                 case SerializedPropertyType.Integer:
-                    DrawPropertyForInt(rect, property, label, animatorStates);
+                    DrawPropertyForInt(rect, property, label, animatorTransitions);
                     break;
                 case SerializedPropertyType.String:
-                    DrawPropertyForString(rect, property, label, animatorStates);
+                    DrawPropertyForString(rect, property, label, animatorTransitions);
                     break;
                 default:
                     GUIUtils.DrawDefaultPropertyAndHelpBox(rect, property, string.Format(InvalidTypeWarningMessage, property.name));
@@ -61,24 +61,32 @@ namespace Utils.Editor.AttributeDrawers.Animations
             EditorGUI.EndProperty();
         }
 
-        private static void DrawPropertyForInt(Rect rect, SerializedProperty property, GUIContent label, List<AnimatorState> animatorStates)
+        private static void DrawPropertyForInt(Rect rect, SerializedProperty property, GUIContent label, List<(AnimatorStateTransition, AnimatorState)> animatorTransitions)
         {
-            int stateIndex = property.intValue;
+            int transitionIndex = property.intValue;
             int index = 0;
 
-            for (int i = 0; i < animatorStates.Count; i++)
+            for (int i = 0; i < animatorTransitions.Count; i++)
             {
-                if (stateIndex == animatorStates[i].nameHash)
+                var (transition, source) = animatorTransitions[i];
+                var displayName = transition.GetDisplayName(source);
+                if (transitionIndex == Animator.StringToHash(displayName))
                 {
                     index = i + 1; // +1 because the first option is reserved for (None)
                     break;
                 }
             }
 
-            string[] displayOptions = GetDisplayOptions(animatorStates);
+            string[] displayOptions = GetDisplayOptions(animatorTransitions);
 
             int newIndex = EditorGUI.Popup(rect, label.text, index, displayOptions);
-            int newValue = newIndex == 0 ? 0 : animatorStates[newIndex - 1].nameHash;
+            int newValue = 0;
+            if (newIndex > 0)
+            {
+                var (newTransition, newSource) = animatorTransitions[newIndex - 1];
+                var newName = newTransition.GetDisplayName(newSource);
+                newValue = Animator.StringToHash(newName);
+            }
 
             if (property.intValue != newValue)
             {
@@ -86,24 +94,31 @@ namespace Utils.Editor.AttributeDrawers.Animations
             }
         }
 
-        private static void DrawPropertyForString(Rect rect, SerializedProperty property, GUIContent label, List<AnimatorState> animatorStates)
+        private static void DrawPropertyForString(Rect rect, SerializedProperty property, GUIContent label, List<(AnimatorStateTransition, AnimatorState)> animatorTransitions)
         {
-            string stateName = property.stringValue;
+            string transitionName = property.stringValue;
             int index = 0;
 
-            for (int i = 0; i < animatorStates.Count; i++)
+            for (int i = 0; i < animatorTransitions.Count; i++)
             {
-                if (stateName.Equals(animatorStates[i].name, System.StringComparison.Ordinal))
+                var (transition, source) = animatorTransitions[i];
+                var displayName = transition.GetDisplayName(source);
+                if (transitionName.Equals(displayName, System.StringComparison.Ordinal))
                 {
                     index = i + 1; // +1 because the first option is reserved for (None)
                     break;
                 }
             }
 
-            string[] displayOptions = GetDisplayOptions(animatorStates);
+            string[] displayOptions = GetDisplayOptions(animatorTransitions);
 
             int newIndex = EditorGUI.Popup(rect, label.text, index, displayOptions);
-            string newValue = newIndex == 0 ? null : animatorStates[newIndex - 1].name;
+            string newValue = null;
+            if (newIndex > 0)
+            {
+                var (newTransition, newSource) = animatorTransitions[newIndex - 1];
+                newValue = newTransition.GetDisplayName(newSource);
+            }
 
             if (!property.stringValue.Equals(newValue, System.StringComparison.Ordinal))
             {
@@ -111,14 +126,16 @@ namespace Utils.Editor.AttributeDrawers.Animations
             }
         }
 
-        private static string[] GetDisplayOptions(List<AnimatorState> animatorStates)
+        private static string[] GetDisplayOptions(List<(AnimatorStateTransition, AnimatorState)> animatorTransitions)
         {
-            string[] displayOptions = new string[animatorStates.Count + 1];
+            string[] displayOptions = new string[animatorTransitions.Count + 1];
             displayOptions[0] = "(None)";
 
-            for (int i = 0; i < animatorStates.Count; i++)
+            for (int i = 0; i < animatorTransitions.Count; i++)
             {
-                displayOptions[i + 1] = animatorStates[i].name;
+                var (transition, source) = animatorTransitions[i];
+                var displayName = transition.GetDisplayName(source);
+                displayOptions[i + 1] = displayName;
             }
 
             return displayOptions;
@@ -167,7 +184,5 @@ namespace Utils.Editor.AttributeDrawers.Animations
 
             return null;
         }
-
-        
     }
 }

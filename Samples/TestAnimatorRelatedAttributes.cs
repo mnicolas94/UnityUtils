@@ -28,6 +28,10 @@ namespace Utils.Samples
         [SerializeField, AnimatorState(nameof(_animator))] private string _animatorStateString;
         [SerializeField, AnimatorState(nameof(_animator))] private int _animatorStateInt;
         
+        [Header("Transitions")]
+        [SerializeField, AnimatorTransition(nameof(_animator))] private string _animatorTransitionString;
+        [SerializeField, AnimatorTransition(nameof(_animator))] private int _animatorTransitionInt;
+        
         [ContextMenu("Test")]
         public void Test()
         {
