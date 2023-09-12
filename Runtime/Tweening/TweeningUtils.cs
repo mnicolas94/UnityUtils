@@ -16,6 +16,8 @@ namespace Utils.Tweening
             Curves.TimeCurveFunction timeCurve,
             CancellationToken ct)
         {
+            timeDependantFunction(0);
+            
             float startTime = Time.time;
             float timeToFinish = startTime + duration;
             while (Time.time <= timeToFinish && !ct.IsCancellationRequested)
@@ -25,6 +27,8 @@ namespace Utils.Tweening
                 timeDependantFunction(normalizedTime);
                 await Task.Yield();
             }
+            
+            timeDependantFunction(1);
         }
         
         public static IEnumerator TweenTimeCoroutine(
@@ -32,6 +36,8 @@ namespace Utils.Tweening
             float duration,
             Curves.TimeCurveFunction timeCurve)
         {
+            timeDependantFunction(0);
+            
             float startTime = Time.time;
             float timeToFinish = startTime + duration;
             while (Time.time <= timeToFinish)
@@ -41,6 +47,8 @@ namespace Utils.Tweening
                 timeDependantFunction(normalizedTime);
                 yield return null;
             }
+            
+            timeDependantFunction(1);
         }
         
         public static async Task TweenMoveAsync(
