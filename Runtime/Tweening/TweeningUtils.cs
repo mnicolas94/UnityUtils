@@ -30,6 +30,18 @@ namespace Utils.Tweening
             
             timeDependantFunction(1);
         }
+
+        public static async Task TweenFromToAsync(
+            float from,
+            float to,
+            Action<float> setter,
+            float duration,
+            Curves.TimeCurveFunction easingCurve,
+            CancellationToken ct)
+        {
+            var size = to - from;
+            await TweenTimeAsync(val => setter(val * size + from), duration, easingCurve, ct);
+        }
         
         public static IEnumerator TweenTimeCoroutine(
             Action<float> timeDependantFunction,
@@ -49,6 +61,17 @@ namespace Utils.Tweening
             }
             
             timeDependantFunction(1);
+        }
+        
+        public static IEnumerator TweenFromToCoroutine(
+            float from,
+            float to,
+            Action<float> setter,
+            float duration,
+            Curves.TimeCurveFunction easingCurve)
+        {
+            var size = to - from;
+            return TweenTimeCoroutine(val => setter(val * size + from), duration, easingCurve);
         }
         
         public static async Task TweenMoveAsync(
