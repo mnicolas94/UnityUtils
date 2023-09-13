@@ -29,5 +29,23 @@ namespace Utils.Extensions
                 }
             }
         }
+        
+        public static void AddRange<T>(this List<T> list, IEnumerable<T> range, int count)
+        {
+            var i = 0;
+            foreach (var t in range)
+            {
+                if (i < count)
+                {
+                    list.Add(t);
+                }
+                else
+                {
+                    break;
+                }
+
+                i++;
+            }
+        }
     }
 }
