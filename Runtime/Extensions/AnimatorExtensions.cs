@@ -53,6 +53,15 @@ namespace Utils.Extensions
             }
         }
         
+        public static async Task WaitUntilCurrentStateIsOverAsync(this Animator animator, int layerIndex, CancellationToken ct)
+        {
+            var currentState = animator.GetCurrentAnimatorStateInfo(layerIndex).shortNameHash;
+            while (!ct.IsCancellationRequested && animator.IsCurrentState(layerIndex, currentState))
+            {
+                await Task.Yield();
+            }
+        }
+        
         public static async Task WaitUntilTransitionAsync(this Animator animator, int layerIndex, int transitionHash, CancellationToken ct)
         {
             while (!ct.IsCancellationRequested && !animator.IsCurrentTransition(layerIndex, transitionHash))
@@ -60,7 +69,6 @@ namespace Utils.Extensions
                 await Task.Yield();
             }
         }
-        
         
         public static async Task WaitUntilTransitionIsAtAsync(this Animator animator, int layerIndex, int transitionHash, float percent, CancellationToken ct)
         {
