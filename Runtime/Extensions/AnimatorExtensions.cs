@@ -39,7 +39,7 @@ namespace Utils.Extensions
 
         public static async Task WaitUntilStateAsync(this Animator animator, int layerIndex, int stateHash, CancellationToken ct)
         {
-            while (!animator.IsCurrentState(layerIndex, stateHash) && !ct.IsCancellationRequested)
+            while (!ct.IsCancellationRequested && !animator.IsCurrentState(layerIndex, stateHash))
             {
                 await Task.Yield();
             }
@@ -47,7 +47,7 @@ namespace Utils.Extensions
         
         public static async Task WaitUntilStateIsOverAsync(this Animator animator, int layerIndex, int stateHash, CancellationToken ct)
         {
-            while (animator.IsCurrentState(layerIndex, stateHash) && !ct.IsCancellationRequested)
+            while (!ct.IsCancellationRequested && animator.IsCurrentState(layerIndex, stateHash))
             {
                 await Task.Yield();
             }
@@ -55,7 +55,7 @@ namespace Utils.Extensions
         
         public static async Task WaitUntilTransitionAsync(this Animator animator, int layerIndex, int transitionHash, CancellationToken ct)
         {
-            while (!animator.IsCurrentTransition(layerIndex, transitionHash) && !ct.IsCancellationRequested)
+            while (!ct.IsCancellationRequested && !animator.IsCurrentTransition(layerIndex, transitionHash))
             {
                 await Task.Yield();
             }
@@ -67,7 +67,7 @@ namespace Utils.Extensions
             var isCurrent = animator.IsCurrentTransition(layerIndex, transitionHash);
             var reachedTime = false;
             var transitionIsCompleted = false;
-            while (!reachedTime && !transitionIsCompleted && !ct.IsCancellationRequested)
+            while (!ct.IsCancellationRequested && !reachedTime && !transitionIsCompleted)
             {
                 var transition = animator.GetAnimatorTransitionInfo(layerIndex);
                 var newIsCurrent = animator.IsCurrentTransition(layerIndex, transitionHash);
