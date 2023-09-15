@@ -12,6 +12,7 @@ namespace Utils.Editor.AttributeDrawers
 {
     /// <summary>
     /// This code was taken from https://github.com/dbrizov/NaughtyAttributes
+    /// and modified by me.
     /// </summary>
     [CustomPropertyDrawer(typeof(DropdownAttribute))]
     public class DropdownPropertyDrawer : PropertyDrawer
@@ -183,6 +184,8 @@ namespace Utils.Editor.AttributeDrawers
                             // TODO: Problem with structs, because they are value type.
                             // The solution is to make boxing/unboxing but unfortunately I don't know the compile time type of the target object
                             dropdownField.SetValue(target, newValue);
+                            // to ensure values get stored on ScriptableObjects
+                            EditorUtility.SetDirty(serializedObject.targetObject);
                         }
                     },
                     null);
