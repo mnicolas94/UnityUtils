@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _value: A
+  _customListValue: 2
   _managed:
     rid: 3334507223179853848
   references:
@@ -230,8 +231,8 @@ MonoBehaviour:
     - rid: 3334507223179853848
       type: {class: Managed, ns: Samples.Common, asm: Assembly-CSharp}
       data:
-        _value: A
-        _value2: D
+        _value: B
+        _value2: C
 --- !u!4 &54516656
 Transform:
   m_ObjectHideFlags: 0

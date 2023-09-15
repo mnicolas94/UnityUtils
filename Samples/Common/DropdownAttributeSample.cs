@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -12,6 +13,9 @@ namespace Samples.Common
     {
         [SerializeField, Dropdown(nameof(Values))]
         private string _value;
+        
+        [SerializeField, Dropdown(nameof(CustomListValues))]
+        private float _customListValue;
 
         [SerializeReference] private IManaged _managed = new Managed();
         
@@ -25,11 +29,35 @@ namespace Samples.Common
                 "D",
             };
         }
+        
+        private CustomList CustomListValues()
+        {
+            return new CustomList();
+        }
 
         [ContextMenu("Debug value")]
         private void DebugValue()
         {
             Debug.Log(_value);
+        }
+    }
+    
+    internal class CustomList : IDropdownList
+    {
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            var d = new Dictionary<string, object>
+            {
+                { "1", 1f },
+                { "2", 2f },
+                { "3", 3f },
+            };
+            return d.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 

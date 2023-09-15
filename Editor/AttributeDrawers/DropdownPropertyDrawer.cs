@@ -33,63 +33,32 @@ namespace Utils.Editor.AttributeDrawers
 
             if (AreValuesValid(valuesObject, dropdownField))
             {
+                object selectedValue = dropdownField.GetValue(target);
+                List<object> values = new List<object>();
+                List<string> displayOptions = new List<string>();
                 if (valuesObject is IList && dropdownField.FieldType == GetElementType(valuesObject))
                 {
-                    // Selected value
-                    object selectedValue = dropdownField.GetValue(target);
-
                     // Values and display options
                     IList valuesList = (IList)valuesObject;
-                    object[] values = new object[valuesList.Count];
-                    string[] displayOptions = new string[valuesList.Count];
 
-                    for (int i = 0; i < values.Length; i++)
+                    for (int i = 0; i < valuesList.Count; i++)
                     {
                         object value = valuesList[i];
-                        values[i] = value;
-                        displayOptions[i] = value == null ? "<null>" : value.ToString();
+                        var displayOption = value == null ? "<null>" : value.ToString();
+                        values.Add(value);
+                        displayOptions.Add(displayOption);
                     }
-
-                    // Selected value index
-                    int selectedValueIndex = Array.IndexOf(values, selectedValue);
-                    if (selectedValueIndex < 0)
-                    {
-                        selectedValueIndex = 0;
-                    }
-
-                    Dropdown(
-                        rect,
-                        property.serializedObject,
-                        target,
-                        dropdownField,
-                        label.text,
-                        selectedValueIndex,
-                        values,
-                        displayOptions);
                 }
                 else if (valuesObject is IDropdownList)
                 {
-                    // Current value
-                    object selectedValue = dropdownField.GetValue(target);
-
                     // Current value index, values and display options
-                    int index = -1;
-                    int selectedValueIndex = -1;
-                    List<object> values = new List<object>();
-                    List<string> displayOptions = new List<string>();
                     IDropdownList dropdown = (IDropdownList)valuesObject;
 
                     using (IEnumerator<KeyValuePair<string, object>> dropdownEnumerator = dropdown.GetEnumerator())
                     {
                         while (dropdownEnumerator.MoveNext())
                         {
-                            index++;
-
                             KeyValuePair<string, object> current = dropdownEnumerator.Current;
-                            if (current.Value?.Equals(selectedValue) == true)
-                            {
-                                selectedValueIndex = index;
-                            }
 
                             values.Add(current.Value);
 
@@ -107,22 +76,23 @@ namespace Utils.Editor.AttributeDrawers
                             }
                         }
                     }
-
-                    if (selectedValueIndex < 0)
-                    {
-                        selectedValueIndex = 0;
-                    }
-
-                    Dropdown(
-                        rect,
-                        property.serializedObject,
-                        target,
-                        dropdownField,
-                        label.text,
-                        selectedValueIndex,
-                        values.ToArray(),
-                        displayOptions.ToArray());
                 }
+                
+                int selectedValueIndex = values.IndexOf(selectedValue);
+                if (selectedValueIndex < 0)
+                {
+                    selectedValueIndex = 0;
+                }
+
+                Dropdown(
+                    rect,
+                    property.serializedObject,
+                    target,
+                    dropdownField,
+                    label.text,
+                    selectedValueIndex,
+                    values.ToArray(),
+                    displayOptions.ToArray());
             }
             else
             {
