@@ -5,8 +5,8 @@ namespace Utils.UI
 {
     public class DisplayVersionText : MonoBehaviour
     {
-        [Multiline(4)]
-        private string _versionFormatString = "game v{v}";
+        [SerializeField, Multiline(4)]
+        private string _versionFormatString = "v{v}";
         [SerializeField] private TMP_Text _text;
 
         void Start()
