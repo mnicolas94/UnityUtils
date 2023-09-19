@@ -22,12 +22,15 @@ namespace Utils.Editor.AttributeDrawers.Animations
             
             AnimatorController animatorController = AnimatorAttributesUtility.GetAnimatorController(property, animatorName);
 
-            int layersCount = animatorController.layers.Length;
-            List<(AnimatorControllerLayer, int)> animatorLayers = new List<(AnimatorControllerLayer, int)>(layersCount);
-            for (int i = 0; i < layersCount; i++)
+            List<(AnimatorControllerLayer, int)> animatorLayers = new List<(AnimatorControllerLayer, int)>();
+            if (animatorController)
             {
-                AnimatorControllerLayer layer = animatorController.layers[i];
-                animatorLayers.Add((layer, i));
+                int layersCount = animatorController.layers.Length;
+                for (int i = 0; i < layersCount; i++)
+                {
+                    AnimatorControllerLayer layer = animatorController.layers[i];
+                    animatorLayers.Add((layer, i));
+                }
             }
             
             AnimatorAttributesUtility.OnGUI(rect, property, label, animatorController, animatorLayers,

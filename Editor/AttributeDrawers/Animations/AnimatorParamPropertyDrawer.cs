@@ -25,14 +25,17 @@ namespace Utils.Editor.AttributeDrawers.Animations
 
             AnimatorController animatorController = AnimatorAttributesUtility.GetAnimatorController(property, animatorParamAttribute.AnimatorName);
 
-            int parametersCount = animatorController.parameters.Length;
-            List<AnimatorControllerParameter> animatorParameters = new List<AnimatorControllerParameter>(parametersCount);
-            for (int i = 0; i < parametersCount; i++)
+            List<AnimatorControllerParameter> animatorParameters = new List<AnimatorControllerParameter>();
+            if (animatorController)
             {
-                AnimatorControllerParameter parameter = animatorController.parameters[i];
-                if (animatorParamAttribute.AnimatorParamType == null || parameter.type == animatorParamAttribute.AnimatorParamType)
+                int parametersCount = animatorController.parameters.Length;
+                for (int i = 0; i < parametersCount; i++)
                 {
-                    animatorParameters.Add(parameter);
+                    AnimatorControllerParameter parameter = animatorController.parameters[i];
+                    if (animatorParamAttribute.AnimatorParamType == null || parameter.type == animatorParamAttribute.AnimatorParamType)
+                    {
+                        animatorParameters.Add(parameter);
+                    }
                 }
             }
             

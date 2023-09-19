@@ -25,7 +25,7 @@ namespace Utils.Editor.AttributeDrawers.Animations
 
             var animatorController = AnimatorAttributesUtility.GetAnimatorController(property, animatorTransitionAttribute.AnimatorName);
 
-            var animatorTransitions = animatorController.GetStateTransitionsWithSource();
+            var animatorTransitions = animatorController ? animatorController.GetStateTransitionsWithSource() : new List<(AnimatorStateTransition, AnimatorState)>();
 
             AnimatorAttributesUtility.OnGUI(rect, property, label, animatorController, animatorTransitions,
                 GetInt, GetString);

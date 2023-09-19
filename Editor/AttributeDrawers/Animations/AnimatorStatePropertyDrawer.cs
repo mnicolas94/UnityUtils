@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using Utils.Attributes.Animations;
@@ -20,7 +21,7 @@ namespace Utils.Editor.AttributeDrawers.Animations
 
             var animatorController = AnimatorAttributesUtility.GetAnimatorController(property, animatorStateAttribute.AnimatorName);
 
-            var animatorStates = animatorController.GetStates();
+            var animatorStates = animatorController ? animatorController.GetStates() : new List<AnimatorState>();
 
             AnimatorAttributesUtility.OnGUI(rect, property, label, animatorController, animatorStates,
                 GetInt, GetString);
