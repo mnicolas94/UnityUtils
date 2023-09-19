@@ -83,6 +83,38 @@ namespace Utils.Editor
 
             return parentSerializedProperty;
         }
+
+        public static T GetFieldByName<T>(SerializedProperty property, string fieldName)
+        {
+            object target = GetTargetObjectWithProperty(property);
+
+            FieldInfo animatorFieldInfo = ReflectionUtility.GetField(target, fieldName);
+            if (animatorFieldInfo != null &&
+                animatorFieldInfo.FieldType == typeof(T))
+            {
+                var field = (T) animatorFieldInfo.GetValue(target);
+                return field;
+            }
+
+            PropertyInfo animatorPropertyInfo = ReflectionUtility.GetProperty(target, fieldName);
+            if (animatorPropertyInfo != null &&
+                animatorPropertyInfo.PropertyType == typeof(T))
+            {
+                T field = (T) animatorPropertyInfo.GetValue(target);
+                return field;
+            }
+
+            MethodInfo animatorGetterMethodInfo = ReflectionUtility.GetMethod(target, fieldName);
+            if (animatorGetterMethodInfo != null &&
+                animatorGetterMethodInfo.ReturnType == typeof(T) &&
+                animatorGetterMethodInfo.GetParameters().Length == 0)
+            {
+                T field = (T) animatorGetterMethodInfo.Invoke(target, null);
+                return field;
+            }
+
+            return default;
+        }
         
         /// <summary>
         /// Gets the object that the property is a member of

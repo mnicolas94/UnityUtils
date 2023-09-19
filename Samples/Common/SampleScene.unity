@@ -1010,8 +1010,8 @@ MonoBehaviour:
   _animatorLayerInt: 2
   _animatorStateString: State2
   _animatorStateInt: -1363389753
-  _animatorTransitionString: 
-  _animatorTransitionInt: 0
+  _animatorTransitionString: State1 -> New StateMachine
+  _animatorTransitionInt: 893725962
 --- !u!95 &1611989256
 Animator:
   serializedVersion: 4
@@ -1022,7 +1022,7 @@ Animator:
   m_GameObject: {fileID: 1611989254}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c52e2039cd9ce854b814a2658c820672, type: 2}
+  m_Controller: {fileID: 22100000, guid: d00fb97b8ce223748a1a906281cd58d9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
