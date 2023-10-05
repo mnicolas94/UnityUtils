@@ -1,19 +1,31 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Utils.Attributes;
 using Screen = UnityEngine.Device.Screen;
 
 namespace Utils.UI
 {
     public class SafeAreaResizer : MonoBehaviour
     {
-        [FormerlySerializedAs("target"), SerializeField]
+        [FormerlySerializedAs("target"), SerializeField, AutoProperty]
         private RectTransform _target;
+
+        private Rect _lastSafeArea;
         
         private void Start()
         {
             var rect = Screen.safeArea;
             ResizeToSafeArea(rect);
+        }
+
+        private void Update()
+        {
+            if (_lastSafeArea != Screen.safeArea)
+            {
+                ResizeToSafeArea(Screen.safeArea);
+            }
         }
 
         private void ResizeToSafeArea(Rect rect)
@@ -28,6 +40,8 @@ namespace Utils.UI
 
             _target.anchorMin = anchorMin;
             _target.anchorMax = anchorMax;
+
+            _lastSafeArea = rect;
         }
         
 #if UNITY_EDITOR
