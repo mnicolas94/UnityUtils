@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEditor.Animations;
+using UnityEngine;
 
 namespace Utils.Editor.AttributeDrawers.Animations
 {
@@ -80,6 +82,20 @@ namespace Utils.Editor.AttributeDrawers.Animations
                 return state.transitions.Select(transition => (transition, state));
             }).ToList();
             return transitions;
+        }
+
+        public static void AddStateWithClip(this AnimatorController controller, AnimationClip clip, int layerIndex)
+        {
+            var layer = controller.layers[layerIndex];
+            var state = layer.stateMachine.AddState(clip.name);
+            state.motion = clip;
+            EditorUtility.SetDirty(controller);
+        }
+
+        public static AnimatorState GetStateWithClip(this AnimatorController controller, AnimationClip clip)
+        {
+            var states = controller.GetStates();
+            return states.Find(state => state.motion == clip);
         }
     }
 }
