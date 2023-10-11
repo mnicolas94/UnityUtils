@@ -6,6 +6,12 @@ namespace Utils.Extensions
 {
     public static class AnimatorExtensions
     {
+        public static void RestartToDefaultState(this Animator animator)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+        }
+    
         public static bool IsCurrentState(this Animator animator, int layerIndex, string state)
         {
             return animator.GetCurrentAnimatorStateInfo(layerIndex).IsName(state);
