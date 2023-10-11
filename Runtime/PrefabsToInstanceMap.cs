@@ -8,6 +8,11 @@ namespace Utils
     {
         private Dictionary<Object, Object> _instances = new Dictionary<Object, Object>();
 
+        public bool ExistsInstance(Object prefab)
+        {
+            return _instances.ContainsKey(prefab);
+        }
+        
         public Object GetOrCreateInstance(Object prefab)
         {
             if (!_instances.ContainsKey(prefab))
