@@ -68,7 +68,7 @@ namespace Utils.Extensions
             }
         }
 
-        public static async Task WaitUntilCurrentStateLoopsNTimes(Animator animator, int layerIndex, int loops,
+        public static async Task WaitUntilCurrentStateLoopsNTimes(this Animator animator, int layerIndex, int loops,
             CancellationToken ct)
         {
             var currentState = animator.GetCurrentAnimatorStateInfo(layerIndex);
