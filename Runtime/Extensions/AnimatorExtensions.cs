@@ -68,17 +68,17 @@ namespace Utils.Extensions
             }
         }
 
-        public static async Task WaitUntilCurrentStateLoopsNTimes(this Animator animator, int layerIndex, int loops,
+        public static async Task WaitUntilCurrentStateLoopsNTimes(this Animator animator, int layerIndex, float loops,
             CancellationToken ct)
         {
             var currentState = animator.GetCurrentAnimatorStateInfo(layerIndex);
             var doesLoop = currentState.loop;
             if (doesLoop)
             {
-                var loopCount = 0;
+                var loopCount = 0f;
                 while (loopCount < loops && !ct.IsCancellationRequested)
                 {
-                    loopCount = (int) animator.GetCurrentAnimatorStateInfo(layerIndex).normalizedTime;
+                    loopCount = animator.GetCurrentAnimatorStateInfo(layerIndex).normalizedTime;
                     await Task.Yield();
                 }
             }
