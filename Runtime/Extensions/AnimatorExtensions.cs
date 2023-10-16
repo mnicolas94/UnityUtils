@@ -88,6 +88,22 @@ namespace Utils.Extensions
             }
         }
         
+        public static async Task WaitUntilCurrentTransitionIsOverAsync(this Animator animator, int layerIndex, CancellationToken ct)
+        {
+            while (!ct.IsCancellationRequested && animator.isActiveAndEnabled && animator.IsInTransition(layerIndex))
+            {
+                await Task.Yield();
+            }
+        }
+        
+        public static async Task WaitUntilAnyTransitionAsync(this Animator animator, int layerIndex, CancellationToken ct)
+        {
+            while (!ct.IsCancellationRequested && animator.isActiveAndEnabled && !animator.IsInTransition(layerIndex))
+            {
+                await Task.Yield();
+            }
+        }
+        
         public static async Task WaitUntilTransitionAsync(this Animator animator, int layerIndex, int transitionHash, CancellationToken ct)
         {
             while (!ct.IsCancellationRequested && animator.isActiveAndEnabled && !animator.IsCurrentTransition(layerIndex, transitionHash))
