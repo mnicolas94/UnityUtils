@@ -88,10 +88,52 @@ namespace Utils.Extensions
             }
         }
         
+        /// <summary>
+        /// Wait for a state to be exited (played) N times. Loops of that state aren't counted.
+        /// </summary>
+        /// <param name="animator"></param>
+        /// <param name="layerIndex"></param>
+        /// <param name="stateHash"></param>
+        /// <param name="playedCount"></param>
+        /// <param name="ct"></param>
+        public static async Task WaitUntilStateIsPlayedNTimes(this Animator animator, int layerIndex, int stateHash,
+            int playedCount, CancellationToken ct)
+        {
+            // if entered during transition ignore it and wait for it to be over
+            if (animator.IsInTransition(layerIndex))
+            {
+                await animator.WaitUntilCurrentTransitionIsOverAsync(layerIndex, ct);
+            }
+            
+            // start counting
+            var count = 0;
+            while (count < playedCount && !ct.IsCancellationRequested)
+            {
+                if (!animator.IsInTransition(layerIndex))
+                {
+                    await animator.WaitUntilAnyTransitionAsync(layerIndex, ct);
+                }
+                
+                var current = animator.GetCurrentAnimatorStateInfo(layerIndex);
+                var leavingState = current.shortNameHash == stateHash || current.fullPathHash == stateHash;
+                if (leavingState)
+                {
+                    count++;
+                    await animator.WaitUntilCurrentTransitionIsOverAsync(layerIndex, ct);
+                }
+            }
+        }
+        
         public static async Task WaitUntilCurrentTransitionIsOverAsync(this Animator animator, int layerIndex, CancellationToken ct)
         {
-            while (!ct.IsCancellationRequested && animator.isActiveAndEnabled && animator.IsInTransition(layerIndex))
+            var lastTransitionHash = animator.IsInTransition(layerIndex) ? animator.GetAnimatorTransitionInfo(layerIndex).nameHash : 0;
+            var sameTransition = true;
+            while (!ct.IsCancellationRequested && animator.isActiveAndEnabled && animator.IsInTransition(layerIndex) && sameTransition)
             {
+                var currentTransitionHash = animator.GetAnimatorTransitionInfo(layerIndex).nameHash;
+                sameTransition = currentTransitionHash == lastTransitionHash;
+                lastTransitionHash = currentTransitionHash;
+                
                 await Task.Yield();
             }
         }
