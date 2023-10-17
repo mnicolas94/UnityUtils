@@ -121,6 +121,10 @@ namespace Utils.Extensions
                     count++;
                     await animator.WaitUntilCurrentTransitionIsOverAsync(layerIndex, ct);
                 }
+                else
+                {
+                    await Task.Yield();
+                }
             }
         }
         
