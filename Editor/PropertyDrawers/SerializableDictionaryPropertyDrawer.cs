@@ -12,6 +12,7 @@ using Utils.Serializables;
 namespace Utils.Editor.PropertyDrawers
 {
 	[CustomPropertyDrawer(typeof(ISerializableDictionaryBase), true)]
+	[CustomPropertyDrawer(typeof(SerializableDictionary<,>), true)]
 	public class SerializableDictionaryPropertyDrawer : PropertyDrawer
 	{
 		const string KeysFieldName = "m_keys";

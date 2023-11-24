@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace Utils.Serializables
 {
 	public interface ISerializableDictionaryBase{}
 
+	[Serializable]
 	public abstract class SerializableDictionaryBase<TKey, TValue, TValueStorage> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver, ISerializableDictionaryBase
 	{
 		[SerializeField]
@@ -75,6 +77,7 @@ namespace Utils.Serializables
 		}
 	}
 
+	[Serializable]
 	public class SerializableDictionary<TKey, TValue> : SerializableDictionaryBase<TKey, TValue, TValue>
 	{
 		public SerializableDictionary()
@@ -107,6 +110,7 @@ namespace Utils.Serializables
 		}
 	}
 
+	[Serializable]
 	public class SerializableDictionary<TKey, TValue, TValueStorage> : SerializableDictionaryBase<TKey, TValue, TValueStorage> where TValueStorage : SerializableDictionary.Storage<TValue>, new()
 	{
 		public SerializableDictionary()
