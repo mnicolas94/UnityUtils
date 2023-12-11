@@ -42,6 +42,16 @@ namespace Utils
         {
             return GetAllInstances().FindAll(instance => instance is T).ConvertAll(instance => (T) instance);
         }
+        
+        public List<Object> GetAllPrefabs()
+        {
+            return _instances.Keys.ToList();
+        }
+
+        public List<T> GetAllPrefabsOfType<T>() where T : Object
+        {
+            return GetAllInstances().FindAll(instance => instance is T).ConvertAll(instance => (T) instance);
+        }
 
         public void RemoveAndDestroyInstance(Object prefab)
         {
