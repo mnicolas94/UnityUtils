@@ -50,7 +50,7 @@ namespace Utils
 
         public List<T> GetAllPrefabsOfType<T>() where T : Object
         {
-            return GetAllInstances().FindAll(instance => instance is T).ConvertAll(instance => (T) instance);
+            return GetAllPrefabs().FindAll(prefab => prefab is T).ConvertAll(prefab => (T) prefab);
         }
 
         public void RemoveAndDestroyInstance(Object prefab)
