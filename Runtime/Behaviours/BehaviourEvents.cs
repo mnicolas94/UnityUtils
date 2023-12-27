@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Utils.Behaviours
 {
+    [Obsolete("Use XXXMessage components for each MonoBehaviour message. It will be better organized in editor.")]
     public class BehaviourEvents : MonoBehaviour
     {
         [SerializeField] private UnityEvent _onAwake = new UnityEvent();
