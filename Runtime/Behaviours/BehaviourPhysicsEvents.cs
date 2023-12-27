@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 using Utils.Extensions;
 
 namespace Utils.Behaviours
 {
+    [Obsolete("Use OnXXXMessage components for each MonoBehaviour message. It will be better organized in editor.")]
     public class BehaviourPhysicsEvents : MonoBehaviour
     {
         [SerializeField] private LayerMask _mask;
