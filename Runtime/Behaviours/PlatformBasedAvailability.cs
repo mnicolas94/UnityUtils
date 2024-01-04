@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Utils.Behaviours
 {
+    [DefaultExecutionOrder(Utils.ExecutionOrder.PlatformBasedAvailability)]
     public class PlatformBasedAvailability : MonoBehaviour
     {
         [SerializeField] private List<RuntimePlatform> _platforms;
