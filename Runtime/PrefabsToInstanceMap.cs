@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Utils
 {
@@ -8,17 +9,27 @@ namespace Utils
     {
         private Dictionary<Object, Object> _instances = new Dictionary<Object, Object>();
 
+        private Action<Object> _onCreate;
+
+        public Action<Object> OnCreate
+        {
+            get => _onCreate;
+            set => _onCreate = value;
+        }
+
         public bool ExistsInstance(Object prefab)
         {
             return _instances.ContainsKey(prefab);
         }
         
-        public Object GetOrCreateInstance(Object prefab)
+        public Object GetOrCreateInstance(Object prefab, Action<Object> onCreate)
         {
             if (!_instances.ContainsKey(prefab))
             {
                 var instance = Object.Instantiate(prefab);
                 _instances.Add(prefab, instance);
+                
+                onCreate.Invoke(instance);
 
                 return instance;
             }
@@ -28,9 +39,9 @@ namespace Utils
             }
         }
 
-        public T GetOrCreateInstance<T>(Object prefab) where T : Object
+        public T GetOrCreateInstance<T>(Object prefab, Action<T> onCreate) where T : Object
         {
-            return (T) GetOrCreateInstance(prefab);
+            return (T) GetOrCreateInstance(prefab, (Action<Object>) onCreate);
         }
 
         public List<Object> GetAllInstances()
