@@ -39,9 +39,9 @@ namespace Utils
             }
         }
 
-        public T GetOrCreateInstance<T>(Object prefab, Action<T> onCreate) where T : Object
+        public T GetOrCreateInstance<T>(Object prefab, Action<Object> onCreate) where T : Object
         {
-            return (T) GetOrCreateInstance(prefab, (Action<Object>) onCreate);
+            return (T) GetOrCreateInstance(prefab, onCreate);
         }
 
         public List<Object> GetAllInstances()
