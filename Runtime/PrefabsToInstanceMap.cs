@@ -22,7 +22,7 @@ namespace Utils
             return _instances.ContainsKey(prefab);
         }
         
-        public Object GetOrCreateInstance(Object prefab, Action<Object> onCreate)
+        public Object GetOrCreateInstance(Object prefab, Action<Object> onCreate = null)
         {
             if (!_instances.ContainsKey(prefab))
             {
@@ -39,7 +39,7 @@ namespace Utils
             }
         }
 
-        public T GetOrCreateInstance<T>(Object prefab, Action<Object> onCreate) where T : Object
+        public T GetOrCreateInstance<T>(Object prefab, Action<Object> onCreate = null) where T : Object
         {
             return (T) GetOrCreateInstance(prefab, onCreate);
         }
