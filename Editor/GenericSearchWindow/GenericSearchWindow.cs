@@ -8,7 +8,7 @@ namespace Utils.Editor.GenericSearchWindow
 {
     public class GenericSearchWindowProviderScriptableObject : ScriptableObject, ISearchWindowProvider
     {
-        [SerializeReference] private ISearchWindowProvider _providerDelegate;
+        private ISearchWindowProvider _providerDelegate;
 
         public void Initialize(ISearchWindowProvider providerDelegate)
         {
@@ -20,15 +20,15 @@ namespace Utils.Editor.GenericSearchWindow
             return _providerDelegate.CreateSearchTree(context);
         }
 
-        public bool OnSelectEntry(SearchTreeEntry SearchTreeEntry, SearchWindowContext context)
+        public bool OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
-            return _providerDelegate.OnSelectEntry(SearchTreeEntry, context);
+            return _providerDelegate.OnSelectEntry(searchTreeEntry, context);
         }
     }
     
-    public class GenericSearchWindowProvider<T> : ISearchWindowProvider
+    public class GenericSearchWindow<T> : ISearchWindowProvider
     {
-        private string _title;
+        private readonly string _title;
         private readonly List<SearchEntry<T>> _entries;
         private readonly Action<T> _onSelected;
         private readonly Texture2D _indentationIcon;
@@ -36,14 +36,14 @@ namespace Utils.Editor.GenericSearchWindow
         public static void Create(Vector2 position, string title, List<SearchEntry<T>> entries, Action<T> onSelected)
         {
             var providerScriptableObject = ScriptableObject.CreateInstance<GenericSearchWindowProviderScriptableObject>();
-            var genericProvider = new GenericSearchWindowProvider<T>(title, entries, onSelected);
+            var genericProvider = new GenericSearchWindow<T>(title, entries, onSelected);
             providerScriptableObject.Initialize(genericProvider);
             
             var searchWindowContext = new SearchWindowContext(position);
             SearchWindow.Open(searchWindowContext, providerScriptableObject);
         }
         
-        private GenericSearchWindowProvider(string title, List<SearchEntry<T>> entries, Action<T> onSelected)
+        private GenericSearchWindow(string title, List<SearchEntry<T>> entries, Action<T> onSelected)
         {
             _title = title;
             _entries = entries;

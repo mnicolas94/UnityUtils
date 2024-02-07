@@ -22,7 +22,7 @@ namespace Samples
                 new ("group2/entry2", "group2/entry2"),
                 new ("entry1", "entry1"),
             };
-            GenericSearchWindowProvider<string>.Create(Vector2.zero, "Title strings", entries, Debug.Log);
+            GenericSearchWindow<string>.Create(Vector2.zero, "Title strings", entries, Debug.Log);
         }
     }
 }

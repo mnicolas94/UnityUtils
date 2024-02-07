@@ -1069,7 +1069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type:
-    _typeHash: 'type: {class: ChildA, ns: Samples.Common, asm: Assembly-CSharp}'
+    _typeHash: 'type: {class: ChildB, ns: Samples.Common, asm: Assembly-CSharp}'
   en: 2
 --- !u!4 &1563785759
 Transform:

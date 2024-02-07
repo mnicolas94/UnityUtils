@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using Utils.Editor.GenericSearchWindow;
 using Utils.Serializables;
 
 namespace Utils.Editor.PropertyDrawers
@@ -40,24 +41,14 @@ namespace Utils.Editor.PropertyDrawers
             if (pressed)
             {
                 var childTypes = TypeUtil.GetSubclassTypes(baseType);
-                var typesNames = childTypes.ConvertAll(tp => tp.Name).ToArray();
-                
-                var menu = new GenericMenu();
-                for (int i = 0; i < typesNames.Length; i++)
-                {
-                    string typeName = typesNames[i];
-                    menu.AddItem(
-                        new GUIContent(typeName),
-                        typeName == text,
-                        index =>
-                        {
-                            var type = childTypes[(int) index];
-                            SetTypeToTypeReference(property, type);
-                        },
-                        i
-                        );
-                }
-                menu.ShowAsContext();
+
+                var searchEntries = childTypes.ConvertAll(tp => new SearchEntry<Type>(tp.Name, tp));
+                var mousePositionScreenSpace = GUIUtility.GUIToScreenPoint(position.position);
+                GenericSearchWindow<Type>.Create(
+                    mousePositionScreenSpace,
+                    "Types",
+                    searchEntries,
+                    type => SetTypeToTypeReference(property, type));
             }
         }
         
