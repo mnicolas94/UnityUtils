@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using Utils.Attributes;
@@ -8,9 +9,20 @@ namespace Utils.Editor.AttributeDrawers
     [CustomPropertyDrawer(typeof(PathSelectorAttribute))]
     public class PathSelectorAttributeDrawer : PropertyDrawer
     {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            var isValid = IsValidType(property);
+            var height = EditorGUI.GetPropertyHeight(property, label);
+            if (!isValid)
+            {
+                height *= 2;
+            }
+            return height;
+        }
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            // EditorGUI.BeginProperty(position, label, property);
+            EditorGUI.BeginProperty(position, label, property);
 
             // Get the attribute data
             var pathSelectorAttribute = attribute as PathSelectorAttribute;
@@ -20,51 +32,104 @@ namespace Utils.Editor.AttributeDrawers
             // Draw the property label
             position = EditorGUI.PrefixLabel(position, label);
 
-            // Draw the property field
-            DrawSelectorButton(position, property, isRelative, isDirectory);
+            // validate property type
+            var isValid = IsValidType(property);
 
-            // EditorGUI.EndProperty();
+            if (isValid)
+            {
+                // Draw the property field
+                DrawSelectorButton(position, property, isRelative, isDirectory);
+            }
+            else
+            {
+                // draw warning box
+                EditorGUI.HelpBox(position, $"Invalid property type. Property {property.name} should be " +
+                                            $"of type string or DefaultAsset", MessageType.Error);
+            }
+            
+
+            EditorGUI.EndProperty();
         }
+        
 
+        private bool IsValidType(SerializedProperty property)
+        {
+            var typeName = property.type;
+            if (typeName is "string" or "PPtr<$DefaultAsset>")
+            {
+                return true;
+            }
+            
+            return false;
+        }
+        
         private void DrawSelectorButton(Rect position, SerializedProperty property, bool isRelative, bool isDirectory)
         {
-            string path = property.stringValue;
-
-            var textRect = new Rect(position);
-            textRect.width -= position.height;
+            // modify property rect to give space to path selection button
+            var propertyRect = new Rect(position);
+            propertyRect.width -= position.height;
             var buttonRect = new Rect(position.x + position.width - position.height, position.y, position.height, position.height);
 
-            // Draw the text field with the selected path
-            EditorGUI.BeginChangeCheck();
-            path = EditorGUI.TextField(textRect, path);
-            if (EditorGUI.EndChangeCheck())
-            {
-                property.stringValue = path;
-            }
+            // Draw the property field
+            EditorGUI.PropertyField(propertyRect, property, GUIContent.none);
 
             // Draw the button to open the path picker
             if (GUI.Button(buttonRect, EditorGUIUtility.IconContent("Folder Icon")))
             {
                 string selectedPath;
-                if (isDirectory)
+                string currentPath = GetCurrentPath(property);
+
+                if (isDirectory || !IsPropertyString(property))
                 {
-                    selectedPath = EditorUtility.OpenFolderPanel("Select Directory", path, "");
+                    selectedPath = EditorUtility.OpenFolderPanel("Select Directory", currentPath, "");
                 }
                 else
                 {
-                    var directory = string.IsNullOrEmpty(path) ? "" : Path.GetDirectoryName(path);
+                    var directory = string.IsNullOrEmpty(currentPath) ? "" : Path.GetDirectoryName(currentPath);
                     selectedPath = EditorUtility.OpenFilePanel("Select File", directory, "");
                 }
+                
                 if (!string.IsNullOrEmpty(selectedPath))
                 {
-                    if (isRelative)
+                    if (isRelative || !IsPropertyString(property))
                     {
                         selectedPath = Path.GetRelativePath("./", selectedPath);
                     }
-                    property.stringValue = selectedPath;
+                    SetCurrentPath(property, selectedPath);
                     property.serializedObject.ApplyModifiedProperties();
                 }
-                GUIUtility.ExitGUI();
+                // GUIUtility.ExitGUI();
+            }
+        }
+
+        private static bool IsPropertyString(SerializedProperty property)
+        {
+            return property.type == "string";
+        }
+
+        private static string GetCurrentPath(SerializedProperty property)
+        {
+            if (IsPropertyString(property))
+            {
+                return property.stringValue;
+            }
+            else
+            {
+                var defaultAsset = property.objectReferenceValue as DefaultAsset;
+                return AssetDatabase.GetAssetPath(defaultAsset);
+            }
+        }
+
+        private void SetCurrentPath(SerializedProperty property, string path)
+        {
+            if (IsPropertyString(property))
+            {
+                property.stringValue = path;
+            }
+            else
+            {
+                var defaultAsset = AssetDatabase.LoadAssetAtPath<DefaultAsset>(path);
+                property.objectReferenceValue = defaultAsset;
             }
         }
     }

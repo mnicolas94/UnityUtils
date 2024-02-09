@@ -903,6 +903,8 @@ MonoBehaviour:
   _path: _builds\MonoBleedingEdge\etc\mono\browscap.ini
   _directory: Packages
   _absoluteDirectory: D:/Desarrollo/GameDev/Projects/facticus-unity-utils/_builds
+  _defaultAsset: {fileID: 102900000, guid: e178c5e81fda3df4eb805b130369b764, type: 3}
+  _defaultAssetFile: {fileID: 102900000, guid: 151845fc4317f144d9a2bcfc852bdfa1, type: 3}
   _normalString: 
 --- !u!4 &1487481373
 Transform:
