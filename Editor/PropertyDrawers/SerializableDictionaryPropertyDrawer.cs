@@ -117,7 +117,7 @@ namespace Utils.Editor.PropertyDrawers
 					var valueProperty = entry.valueProperty;
 					int i = entry.index;
 
-					float lineHeight = DrawKeyValueLine(keyProperty, valueProperty, linePosition, i);
+					float lineHeight = DrawKeyValueLineSimple(keyProperty, valueProperty, "", "", linePosition);
 
 					buttonPosition = linePosition;
 					buttonPosition.x = linePosition.xMax;

@@ -46,7 +46,6 @@ namespace Utils.Editor.AttributeDrawers
                 EditorGUI.HelpBox(position, $"Invalid property type. Property {property.name} should be " +
                                             $"of type string or DefaultAsset", MessageType.Error);
             }
-            
 
             EditorGUI.EndProperty();
         }
