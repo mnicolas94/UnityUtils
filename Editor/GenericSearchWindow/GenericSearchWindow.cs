@@ -80,7 +80,7 @@ namespace Utils.Editor.GenericSearchWindow
                     groupName += "/";
                 }
 
-                var entry = GetIndentedEntry(entryGroups.Last());
+                var entry = GetIndentedEntry(entryGroups.Last(), searchEntry.Icon);
                 entry.level = entryGroups.Length;
                 entry.userData = searchEntry;
                 tree.Add(entry);
@@ -100,9 +100,10 @@ namespace Utils.Editor.GenericSearchWindow
             return false;
         }
 
-        private SearchTreeEntry GetIndentedEntry(string entryText)
+        private SearchTreeEntry GetIndentedEntry(string entryText, Texture entryIcon = null)
         {
-            var entry = new SearchTreeEntry(new GUIContent(entryText, _indentationIcon));
+            var icon = entryIcon != null ? entryIcon : _indentationIcon;
+            var entry = new SearchTreeEntry(new GUIContent(entryText, icon));
             return entry;
         }
     }
