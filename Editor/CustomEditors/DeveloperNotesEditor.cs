@@ -14,7 +14,7 @@ namespace Utils.Editor.CustomEditors
             var textField = new TextField();
             float lineHeight = 18f;
             float minHeight = lineHeight + (2 * 15);
-            float maxHeight = lineHeight + (5 * 15);
+            float maxHeight = lineHeight + (20 * 15);
             textField.multiline = true;
             textField.style.flexDirection = FlexDirection.Column;
             textField.style.whiteSpace = WhiteSpace.Normal;

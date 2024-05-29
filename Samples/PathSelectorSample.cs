@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 using Utils.Attributes;
 
@@ -14,3 +15,4 @@ namespace Samples
         [SerializeField] private string _normalString;
     }
 }
+#endif

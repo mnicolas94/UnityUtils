@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using Utils.Editor;
 
 namespace Samples
@@ -11,8 +12,7 @@ namespace Samples
         public void ShowMessage()
         {
             EditorInputDialog.ShowMessage("Message", _message);
-            
-            
         }
     }
 }
+#endif
