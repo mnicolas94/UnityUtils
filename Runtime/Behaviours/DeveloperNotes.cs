@@ -1,6 +1,4 @@
-﻿#if UNITY_EDITOR
-
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Utils.Behaviours
 {
@@ -9,5 +7,3 @@ namespace Utils.Behaviours
         [SerializeField, TextArea] private string _notes;
     }
 }
-
-#endif
