@@ -20,7 +20,9 @@ namespace Utils.Editor.CustomEditors
             textField.style.whiteSpace = WhiteSpace.Normal;
             textField.style.minHeight = minHeight;
             textField.style.maxHeight = maxHeight;
+#if UNITY_2022_1_OR_NEWER
             textField.SetVerticalScrollerVisibility(ScrollerVisibility.Auto);
+#endif
             textField.bindingPath = notesProperty.propertyPath;
             return textField;
         }
