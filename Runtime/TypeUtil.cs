@@ -31,21 +31,25 @@ using UnityEditor;
         }
 
 #if UNITY_EDITOR
-        public static List<Type> GetSubclassTypes(Type baseType)
-        {
-            var types = TypeCache.GetTypesDerivedFrom(baseType).Where(t => !t.IsInterface &&
-                                                                           !t.IsPointer &&
-                                                                           !t.IsAbstract).ToList();
-            return types;
-        }
-
-        public static Type GetSubclassTypeByName(Type baseClass, string subClassName)
+        public static List<Type> GetSubclassTypes(Type baseType, bool allowInterfaces = false, bool allowAbstract = false)
         {
             bool Predicate(Type t)
             {
-                return !t.IsInterface &&
+                return (!t.IsInterface || allowInterfaces ) &&
+                       (!t.IsAbstract || allowAbstract ) &&
+                       !t.IsPointer;
+            }
+            var types = TypeCache.GetTypesDerivedFrom(baseType).Where(Predicate).ToList();
+            return types;
+        }
+
+        public static Type GetSubclassTypeByName(Type baseClass, string subClassName, bool allowInterfaces = false, bool allowAbstract = false)
+        {
+            bool Predicate(Type t)
+            {
+                return (!t.IsInterface || allowInterfaces ) &&
+                       (!t.IsAbstract || allowAbstract ) &&
                        !t.IsPointer &&
-                       !t.IsAbstract &&
                        t.Name == subClassName;
             }
 

@@ -1175,8 +1175,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type:
-    _typeHash: 'type: {class: ChildB, ns: Samples.Common, asm: Assembly-CSharp}'
-  en: 2
+    _typeHash: 'type: {class: ChildA, ns: Samples.Common, asm: Assembly-CSharp}'
+  interfaceType:
+    _typeHash: 'type: {class: Base, ns: Samples.Common, asm: Assembly-CSharp}'
+  superInterfaceType:
+    _typeHash: 'type: {class: IBase, ns: Samples.Common, asm: Assembly-CSharp}'
 --- !u!4 &1563785759
 Transform:
   m_ObjectHideFlags: 0

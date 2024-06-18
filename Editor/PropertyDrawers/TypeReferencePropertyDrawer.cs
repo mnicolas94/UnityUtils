@@ -40,7 +40,7 @@ namespace Utils.Editor.PropertyDrawers
             bool pressed = EditorGUI.DropdownButton(position, new GUIContent(text), FocusType.Keyboard);
             if (pressed)
             {
-                var childTypes = TypeUtil.GetSubclassTypes(baseType);
+                var childTypes = TypeUtil.GetSubclassTypes(baseType, allowInterfaces: true, allowAbstract: true);
 
                 var searchEntries = childTypes.ConvertAll(tp => new SearchEntry<Type>(tp.Name, tp));
                 var mousePositionScreenSpace = GUIUtility.GUIToScreenPoint(position.position);
@@ -61,9 +61,13 @@ namespace Utils.Editor.PropertyDrawers
         
         private void SetTypeToTypeReference(SerializedProperty property, Type tp)
         {
-            var hashProp = property?.FindPropertyRelative(PROP_TYPEHASH);
-            if (hashProp == null) return;
-            hashProp.stringValue = TypeReference.HashType(tp);
+            if (property == null)
+            {
+                return;
+            }
+            
+            var hashProperty = property.FindPropertyRelative(PROP_TYPEHASH);
+            hashProperty.stringValue = TypeReference.HashType(tp);
             property.serializedObject.ApplyModifiedProperties();
         }
     }

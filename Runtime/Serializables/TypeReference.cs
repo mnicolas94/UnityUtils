@@ -9,7 +9,7 @@ namespace Utils.Serializables
      * https://github.com/lordofduct/spacepuppy-unity-framework-4.0/blob/master/Framework/com.spacepuppy.core/Runtime/src/TypeReference.cs
      */
     [Serializable]
-    public abstract class TypeReference
+    public abstract class TypeReference : ISerializationCallbackReceiver
     {
         [SerializeField] private string _typeHash;
         [NonSerialized] private Type _type;
@@ -28,12 +28,22 @@ namespace Utils.Serializables
             }
         }
 
+        public abstract Type GetBaseType();
+        
+        public void OnBeforeSerialize()
+        {
+            
+        }
+
+        public void OnAfterDeserialize()
+        {
+            _type = UnHashType(_typeHash, GetBaseType());
+        }
+        
         public static implicit operator Type(TypeReference a)
         {
             return a.Type;
         }
-
-        public abstract Type GetBaseType();
         
         public static string HashType(Type tp)
         {
@@ -73,7 +83,7 @@ namespace Utils.Serializables
                 // try recover type
                 if (tp == null)
                 {
-                    tp = TypeUtil.GetSubclassTypeByName(baseType, className);
+                    tp = TypeUtil.GetSubclassTypeByName(baseType, className, allowInterfaces: true, allowAbstract: true);
                 }
 #endif
 

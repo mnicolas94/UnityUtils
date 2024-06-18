@@ -6,18 +6,22 @@ namespace Samples.Common
     public class TypeReferenceTests : MonoBehaviour
     {
         [SerializeField] private TypeReference<Base> type;
-        [SerializeField] private En en;
+        [SerializeField] private TypeReference<IBase> interfaceType;
+        [SerializeField] private TypeReference<ISuperBase> superInterfaceType;
 
         [ContextMenu("Print type")]
         private void PrintType()
         {
             print($"type: {type.Type.Name}");
+            print($"interfaceType: {interfaceType.Type.Name}");
+            print($"superInterfaceType: {superInterfaceType.Type.Name}");
         }
     }
     
-    public enum En { A, B, C}
     
-    public class Base {}
+    public interface ISuperBase {}
+    public interface IBase : ISuperBase {}
+    public abstract class Base : IBase {}
     public class ChildA : Base {}
     public class ChildB : Base {}
     public class ChildC : Base {}
