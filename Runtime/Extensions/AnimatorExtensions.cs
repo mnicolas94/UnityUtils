@@ -88,6 +88,17 @@ namespace Utils.Extensions
             }
         }
         
+        public static async Task WaitUntilCurrentStateIsAtNormalizedTime(this Animator animator, int layerIndex, float time,
+            CancellationToken ct)
+        {
+            var normTime = 0f;
+            while (normTime < time && !ct.IsCancellationRequested)
+            {
+                normTime = animator.GetCurrentAnimatorStateInfo(layerIndex).normalizedTime;
+                await Task.Yield();
+            }
+        }
+        
         /// <summary>
         /// Wait for a state to be exited (played) N times. Loops of that state aren't counted.
         /// </summary>
