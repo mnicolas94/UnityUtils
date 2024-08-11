@@ -9,5 +9,25 @@ namespace Utils
         {
             Debug.Log(message);
         }
+        
+        public void LogBool(bool message)
+        {
+            Debug.Log(message.ToString());
+        }
+        
+        public void LogInt(int message)
+        {
+            Debug.Log(message.ToString());
+        }
+        
+        public void LogFloat(float message)
+        {
+            Debug.Log(message.ToString());
+        }
+        
+        public void LogObject(Object message)
+        {
+            Debug.Log(message);
+        }
     }
 }
