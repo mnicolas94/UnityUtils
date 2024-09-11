@@ -37,9 +37,9 @@ namespace Utils.Input
         {
             foreach (var schemeEvent in _events)
             {
-                if (schemeEvent.Scheme == scheme)
+                if (schemeEvent.MatchesScheme(scheme))
                 {
-                    schemeEvent.Event.Invoke();
+                    schemeEvent.Invoke();
                 }
             }
         }
@@ -48,14 +48,22 @@ namespace Utils.Input
     [Serializable]
     public class SchemeEvent
     {
-        [SerializeField, Dropdown(nameof(GetSchemes))] private InputControlScheme _scheme;
+        [SerializeField] private bool _invert;
+        [SerializeField, Dropdown(nameof(GetSchemes))] private List<InputControlScheme> _schemes;
         [SerializeField] private UnityEvent _event;
 
         private DropdownList<InputControlScheme> _cachedSchemes;
 
-        public InputControlScheme Scheme => _scheme;
+        public bool MatchesScheme(InputControlScheme scheme)
+        {
+            var contains = _schemes.Contains(scheme);
+            return contains ^ _invert;
+        }
 
-        public UnityEvent Event => _event;
+        public void Invoke()
+        {
+            _event.Invoke();
+        }
 
         private DropdownList<InputControlScheme> GetSchemes()
         {
