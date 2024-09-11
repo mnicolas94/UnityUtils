@@ -49,14 +49,12 @@ namespace Utils.Input
     public class SchemeEvent
     {
         [SerializeField] private bool _invert;
-        [SerializeField, Dropdown(nameof(GetSchemes))] private List<InputControlScheme> _schemes;
+        [SerializeField] private List<SchemeSelector> _schemes;
         [SerializeField] private UnityEvent _event;
-
-        private DropdownList<InputControlScheme> _cachedSchemes;
 
         public bool MatchesScheme(InputControlScheme scheme)
         {
-            var contains = _schemes.Contains(scheme);
+            var contains = _schemes.Exists(selector => selector.scheme == scheme);
             return contains ^ _invert;
         }
 
@@ -64,18 +62,30 @@ namespace Utils.Input
         {
             _event.Invoke();
         }
+    }
 
-        private DropdownList<InputControlScheme> GetSchemes()
+    [Serializable]
+    public struct SchemeSelector
+    {
+        [SerializeField, Dropdown(nameof(GetSchemes))] public InputControlScheme scheme;
+        
+        static SchemeSelector()
+        {
+            _cachedSchemes = null;
+        }
+        
+        private static List<InputControlScheme> _cachedSchemes;
+        public static List<InputControlScheme> GetSchemes()
         {
             if (_cachedSchemes == null)
             {
-                _cachedSchemes = new DropdownList<InputControlScheme>();
+                _cachedSchemes = new List<InputControlScheme>();
                 var actions = new DefaultInputActions();
                 
                 var schemes = actions.controlSchemes;
                 foreach (var scheme in schemes)
                 {
-                    _cachedSchemes.Add(scheme.name, scheme);
+                    _cachedSchemes.Add(scheme);
                 }
             }
 
