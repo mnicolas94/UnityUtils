@@ -25,8 +25,14 @@ namespace Utils.UI
                 DestroyInstance(_currentInstances[0]);
             }
         }
-        
-        public async void SpawnNotification(string text)
+
+        public void SpawnNotification(string text)
+        {
+            ClearNotifications();
+            SpawnNotificationNoClear(text);
+        }
+
+        public async void SpawnNotificationNoClear(string text)
         {
             var instance = Instantiate(_notificationPrefab);
             instance.SetText(text);
