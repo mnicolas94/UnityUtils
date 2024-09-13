@@ -7,9 +7,13 @@ namespace Utils.Behaviours.BehaviourMessagesEvents
     public class OnCollisionEnterMessage : MonoBehaviour
     {
         [SerializeField] private LayerMask _mask;
-        
+        public LayerMask Mask
+        {
+            get => _mask;
+            set => _mask = value;
+        }
+
         [SerializeField] private UnityEvent<Collision> _onCollisionEnter = new UnityEvent<Collision>();
-        
         public UnityEvent<Collision> OnCollisionEnterEvent => _onCollisionEnter;
         
         private void OnCollisionEnter(Collision collision)

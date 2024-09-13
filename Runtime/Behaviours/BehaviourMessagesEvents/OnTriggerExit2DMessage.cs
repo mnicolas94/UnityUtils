@@ -7,6 +7,11 @@ namespace Utils.Behaviours.BehaviourMessagesEvents
     public class OnTriggerExit2DMessage : MonoBehaviour
     {
         [SerializeField] private LayerMask _mask;
+        public LayerMask Mask
+        {
+            get => _mask;
+            set => _mask = value;
+        }
         
         [SerializeField] private UnityEvent<Collider2D> _onTriggerExit2D = new UnityEvent<Collider2D>();
         

@@ -7,6 +7,11 @@ namespace Utils.Behaviours.BehaviourMessagesEvents
     public class OnCollisionExit2DMessage : MonoBehaviour
     {
         [SerializeField] private LayerMask _mask;
+        public LayerMask Mask
+        {
+            get => _mask;
+            set => _mask = value;
+        }
         
         [SerializeField] private UnityEvent<Collision2D> _onCollisionExit2D = new UnityEvent<Collision2D>();
         
