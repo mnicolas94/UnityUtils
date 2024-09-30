@@ -7,6 +7,7 @@ namespace Utils.Samples
     public class TestAnimatorRelatedAttributes : MonoBehaviour
     {
         [SerializeField] private Animator _animator;
+        [SerializeField] private RuntimeAnimatorController _animatorController;
 
         [Header("Parameters")]
         [SerializeField, AnimatorParam(nameof(_animator))] private string _animatorParamString;
@@ -32,6 +33,18 @@ namespace Utils.Samples
         [SerializeField, AnimatorTransition(nameof(_animator))] private string _animatorTransitionString;
         [SerializeField, AnimatorTransition(nameof(_animator))] private int _animatorTransitionInt;
         
+        [Header("Runtime Animator Controller")]
+        [SerializeField, AnimatorParam(nameof(_animatorController))] private string _controllerParamString;
+        [SerializeField, AnimatorParam(nameof(_animatorController))] private int _controllerParamHash;
+        [SerializeField, AnimatorParam(nameof(_animatorController), AnimatorControllerParameterType.Float)]
+        private int _controllerParamFloat;
+        [SerializeField, AnimatorParam(nameof(_animatorController), AnimatorControllerParameterType.Int)]
+        private int _controllerParamInt;
+        [SerializeField, AnimatorParam(nameof(_animatorController), AnimatorControllerParameterType.Bool)]
+        private int _controllerParamBool;
+        [SerializeField, AnimatorParam(nameof(_animatorController), AnimatorControllerParameterType.Trigger)]
+        private int _controllerParamTrigger;
+ 
         [ContextMenu("Test")]
         public void Test()
         {

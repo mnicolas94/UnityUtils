@@ -125,6 +125,12 @@ namespace Utils.Editor.AttributeDrawers.Animations
             {
                 return GetControllerFromAnimator(animator);
             }
+            
+            var runtimeController = PropertiesUtils.GetFieldByName<RuntimeAnimatorController>(property, animatorName);
+            if (runtimeController != null)
+            {
+                return GetControllerFromRuntimeController(runtimeController);
+            }
 
             return null;
         }
@@ -132,18 +138,19 @@ namespace Utils.Editor.AttributeDrawers.Animations
         public static AnimatorController GetControllerFromAnimator(Animator animator)
         {
             var runtimeController = animator.runtimeAnimatorController;
-            AnimatorController animatorController;
-            
-            if (runtimeController is AnimatorOverrideController overrideController)
-            {
-                animatorController = overrideController.runtimeAnimatorController as AnimatorController;
-            }
-            else
-            {
-                animatorController = runtimeController as AnimatorController;
-            }
+            var animatorController = GetControllerFromRuntimeController(runtimeController);
             
             return animatorController;
+        }
+        
+        public static AnimatorController GetControllerFromRuntimeController(RuntimeAnimatorController runtimeController)
+        {
+            if (runtimeController is AnimatorOverrideController overrideController)
+            {
+                return overrideController.runtimeAnimatorController as AnimatorController;
+            }
+            
+            return runtimeController as AnimatorController;
         }
     }
 }
