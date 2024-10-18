@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using UnityEditor;
-using UnityEditor.Localization.Plugins.XLIFF.V20;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Utils.Editor.GenericSearchWindow;
 using Utils.Input;
 
 namespace Utils.Editor.PropertyDrawers
