@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿#if ENABLED_INPUTSYSTEM
+
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils.Input;
@@ -78,3 +80,5 @@ namespace Utils.Editor.PropertyDrawers
         }
     }
 }
+
+#endif

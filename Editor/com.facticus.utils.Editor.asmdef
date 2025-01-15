@@ -22,6 +22,11 @@
             "name": "com.unity.localization",
             "expression": "1.3.2",
             "define": "ENABLED_LOCALIZATION"
+        },
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.4.4",
+            "define": "ENABLED_INPUTSYSTEM"
         }
     ],
     "noEngineReferences": false
