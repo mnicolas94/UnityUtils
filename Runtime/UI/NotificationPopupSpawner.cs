@@ -74,13 +74,13 @@ namespace Utils.UI
             var elapsedTime = 0f;
             var isInstanceAlive = _currentInstances.Contains(instance);
 #if UNITY_2022_1_OR_NEWER
-            var ct = Application.exitCancellationToken.IsCancellationRequested;
+            var ct = Application.exitCancellationToken;
 #else
             var ct = _cts.Token;
 #endif            
             while (elapsedTime < _notificationTime
                    && isInstanceAlive
-                   && !ct)
+                   && !ct.IsCancellationRequested)
             {
                 elapsedTime = Time.realtimeSinceStartup - start;
                 isInstanceAlive = _currentInstances.Contains(instance);
