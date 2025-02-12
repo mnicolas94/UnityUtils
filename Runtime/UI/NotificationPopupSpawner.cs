@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -15,7 +16,26 @@ namespace Utils.UI
             get => _notificationPrefab;
             set => _notificationPrefab = value;
         }
+#if !UNITY_2022_1_OR_NEWER
+        private CancellationTokenSource _cts;
 
+        private void OnEnable()
+        {
+            _cts = new CancellationTokenSource();
+        }
+
+        private void OnDisable()
+        {
+            if (!_cts.IsCancellationRequested)
+            {
+                _cts.Cancel();
+            }
+
+            _cts.Dispose();
+            _cts = null;
+        }
+#endif
+        
         private List<NotificationPopup> _currentInstances = new();
 
         public void ClearNotifications()
@@ -53,9 +73,14 @@ namespace Utils.UI
             var start = Time.realtimeSinceStartup;
             var elapsedTime = 0f;
             var isInstanceAlive = _currentInstances.Contains(instance);
+#if UNITY_2022_1_OR_NEWER
+            var ct = Application.exitCancellationToken.IsCancellationRequested;
+#else
+            var ct = _cts.Token;
+#endif            
             while (elapsedTime < _notificationTime
                    && isInstanceAlive
-                   && !Application.exitCancellationToken.IsCancellationRequested)
+                   && !ct)
             {
                 elapsedTime = Time.realtimeSinceStartup - start;
                 isInstanceAlive = _currentInstances.Contains(instance);
