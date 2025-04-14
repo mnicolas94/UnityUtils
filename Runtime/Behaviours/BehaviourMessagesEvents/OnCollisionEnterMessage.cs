@@ -6,7 +6,7 @@ namespace Utils.Behaviours.BehaviourMessagesEvents
 {
     public class OnCollisionEnterMessage : MonoBehaviour
     {
-        [SerializeField] private LayerMask _mask;
+        [SerializeField] private LayerMask _mask = -1;
         public LayerMask Mask
         {
             get => _mask;
