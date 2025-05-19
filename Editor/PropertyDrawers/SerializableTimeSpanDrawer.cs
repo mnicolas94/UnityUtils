@@ -11,6 +11,10 @@ namespace Utils.Editor.PropertyDrawers
         private const string HoursPath = "hours";
         private const string MinutesPath = "minutes";
         private const string SecondsPath = "seconds";
+        private static readonly GUIContent DaysLabel = new (DaysPath);
+        private static readonly GUIContent HoursLabel = new (HoursPath);
+        private static readonly GUIContent MinutesLabel = new (MinutesPath);
+        private static readonly GUIContent SecondsLabel = new (SecondsPath);
         
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -19,22 +23,23 @@ namespace Utils.Editor.PropertyDrawers
             var minutesProperty = property.FindPropertyRelative(MinutesPath);
             var secondsProperty = property.FindPropertyRelative(SecondsPath);
             
-            float pwidth = position.width / 4;
-            float pheight = position.height / 2;
+            var valueRect = EditorGUI.PrefixLabel(position, label);
+            float pwidth = valueRect.width / 4;
+            float pheight = valueRect.height / 2;
             
-            var daysLabelRect = new Rect(position.x, position.y, pwidth, pheight);            
-            var hoursLabelRect = new Rect(position.x + pwidth * 1, position.y, pwidth, pheight);            
-            var minutesLabelRect = new Rect(position.x + pwidth * 2, position.y, pwidth, pheight);            
-            var secondsLabelRect = new Rect(position.x + pwidth * 3, position.y, pwidth, pheight);
-            EditorGUI.LabelField(daysLabelRect, daysProperty.name);
-            EditorGUI.LabelField(hoursLabelRect, hoursProperty.name);
-            EditorGUI.LabelField(minutesLabelRect, minutesProperty.name);
-            EditorGUI.LabelField(secondsLabelRect, secondsProperty.name);
+            var daysLabelRect = new Rect(valueRect.x, valueRect.y, pwidth, pheight);            
+            var hoursLabelRect = new Rect(valueRect.x + pwidth * 1, valueRect.y, pwidth, pheight);            
+            var minutesLabelRect = new Rect(valueRect.x + pwidth * 2, valueRect.y, pwidth, pheight);            
+            var secondsLabelRect = new Rect(valueRect.x + pwidth * 3, valueRect.y, pwidth, pheight);
+            EditorGUI.LabelField(daysLabelRect, DaysLabel);
+            EditorGUI.LabelField(hoursLabelRect, HoursLabel);
+            EditorGUI.LabelField(minutesLabelRect, MinutesLabel);
+            EditorGUI.LabelField(secondsLabelRect, SecondsLabel);
             
-            var daysRect = new Rect(position.x, position.y + pheight, pwidth, pheight);            
-            var hoursRect = new Rect(position.x + pwidth * 1, position.y + pheight, pwidth, pheight);            
-            var minutesRect = new Rect(position.x + pwidth * 2, position.y + pheight, pwidth, pheight);            
-            var secondsRect = new Rect(position.x + pwidth * 3, position.y + pheight, pwidth, pheight);
+            var daysRect = new Rect(valueRect.x, valueRect.y + pheight, pwidth, pheight);            
+            var hoursRect = new Rect(valueRect.x + pwidth * 1, valueRect.y + pheight, pwidth, pheight);            
+            var minutesRect = new Rect(valueRect.x + pwidth * 2, valueRect.y + pheight, pwidth, pheight);            
+            var secondsRect = new Rect(valueRect.x + pwidth * 3, valueRect.y + pheight, pwidth, pheight);
             EditorGUI.PropertyField(daysRect, daysProperty, GUIContent.none);
             EditorGUI.PropertyField(hoursRect, hoursProperty, GUIContent.none);
             EditorGUI.PropertyField(minutesRect, minutesProperty, GUIContent.none);
@@ -43,7 +48,7 @@ namespace Utils.Editor.PropertyDrawers
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property) * 2;
+            return EditorGUIUtility.singleLineHeight * 2;
         }
     }
 }
