@@ -37,7 +37,10 @@ namespace Utils
         
         public static float Normalize(float value, float rangeMin, float rangeMax)
         {
-            return (value - rangeMin) / (rangeMax - rangeMin);
+            var isInverted = rangeMin > rangeMax;
+            var min = isInverted ? rangeMax : rangeMin;
+            var max = isInverted ? rangeMin : rangeMax;
+            return (value - min) / (max - min);
         }
     }
 }
