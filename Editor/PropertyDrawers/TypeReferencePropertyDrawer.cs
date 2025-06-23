@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using Utils.Attributes;
 using Utils.Editor.GenericSearchWindow;
 using Utils.Serializables;
 
@@ -17,7 +16,7 @@ namespace Utils.Editor.PropertyDrawers
     public class TypeReferencePropertyDrawer : PropertyDrawer
     {
         public const string PROP_TYPEHASH = "_typeHash";
-        
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
@@ -26,15 +25,18 @@ namespace Utils.Editor.PropertyDrawers
             {
                 var baseType = target.GetBaseType();
                 var tp = GetTypeFromTypeReference(property, baseType);
-                
-                var rect = EditorGUI.PrefixLabel(position, label);
-                TypeDropDown(rect, label, property, baseType, tp);
+
+                if (ShouldHaveLabel(property))
+                {
+                    position = EditorGUI.PrefixLabel(position, label);
+                }
+                TypeDropDown(position, property, baseType, tp);
             }
             
             EditorGUI.EndProperty();
         }
 
-        private void TypeDropDown(Rect position, GUIContent label, SerializedProperty property, Type baseType, Type currentType)
+        private void TypeDropDown(Rect position, SerializedProperty property, Type baseType, Type currentType)
         {
             string text = currentType == null ? "Null" : currentType.Name;
             bool pressed = EditorGUI.DropdownButton(position, new GUIContent(text), FocusType.Keyboard);
@@ -69,6 +71,12 @@ namespace Utils.Editor.PropertyDrawers
             var hashProperty = property.FindPropertyRelative(PROP_TYPEHASH);
             hashProperty.stringValue = TypeReference.HashType(tp);
             property.serializedObject.ApplyModifiedProperties();
+        }
+        
+        private bool ShouldHaveLabel(SerializedProperty property)
+        {
+            var memberInfo = PropertiesUtils.GetMemberInfoByName(property);
+            return memberInfo != null && memberInfo.GetCustomAttribute<NoLabelAttribute>() == null;
         }
     }
 }

@@ -88,32 +88,57 @@ namespace Utils.Editor
         {
             object target = GetTargetObjectWithProperty(property);
 
-            FieldInfo animatorFieldInfo = ReflectionUtility.GetField(target, fieldName);
-            if (animatorFieldInfo != null &&
-                animatorFieldInfo.FieldType == typeof(T))
+            FieldInfo fieldInfo = ReflectionUtility.GetField(target, fieldName);
+            if (fieldInfo != null &&
+                fieldInfo.FieldType == typeof(T))
             {
-                var field = (T) animatorFieldInfo.GetValue(target);
+                var field = (T) fieldInfo.GetValue(target);
                 return field;
             }
 
-            PropertyInfo animatorPropertyInfo = ReflectionUtility.GetProperty(target, fieldName);
-            if (animatorPropertyInfo != null &&
-                animatorPropertyInfo.PropertyType == typeof(T))
+            PropertyInfo propertyInfo = ReflectionUtility.GetProperty(target, fieldName);
+            if (propertyInfo != null &&
+                propertyInfo.PropertyType == typeof(T))
             {
-                T field = (T) animatorPropertyInfo.GetValue(target);
+                T field = (T) propertyInfo.GetValue(target);
                 return field;
             }
 
-            MethodInfo animatorGetterMethodInfo = ReflectionUtility.GetMethod(target, fieldName);
-            if (animatorGetterMethodInfo != null &&
-                animatorGetterMethodInfo.ReturnType == typeof(T) &&
-                animatorGetterMethodInfo.GetParameters().Length == 0)
+            MethodInfo getterMethodInfo = ReflectionUtility.GetMethod(target, fieldName);
+            if (getterMethodInfo != null &&
+                getterMethodInfo.ReturnType == typeof(T) &&
+                getterMethodInfo.GetParameters().Length == 0)
             {
-                T field = (T) animatorGetterMethodInfo.Invoke(target, null);
+                T field = (T) getterMethodInfo.Invoke(target, null);
                 return field;
             }
 
             return default;
+        }
+
+        public static MemberInfo GetMemberInfoByName(SerializedProperty property)
+        {
+            var fieldName = property.name;
+            var target = GetTargetObjectWithProperty(property);
+            FieldInfo fieldInfo = ReflectionUtility.GetField(target, fieldName);
+            if (fieldInfo != null)
+            {
+                return fieldInfo;
+            }
+
+            PropertyInfo propertyInfo = ReflectionUtility.GetProperty(target, fieldName);
+            if (propertyInfo != null)
+            {
+                return propertyInfo;
+            }
+
+            MethodInfo getterMethodInfo = ReflectionUtility.GetMethod(target, fieldName);
+            if (getterMethodInfo != null)
+            {
+                return getterMethodInfo;
+            }
+
+            return null;
         }
         
         /// <summary>
