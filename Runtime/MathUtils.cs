@@ -34,5 +34,10 @@ namespace Utils
             float y = magnitude * Mathf.Sin(rad);
             return new Vector2(x, y);
         }
+        
+        public static float Normalize(float value, float rangeMin, float rangeMax)
+        {
+            return (value - rangeMin) / (rangeMax - rangeMin);
+        }
     }
 }
