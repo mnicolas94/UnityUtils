@@ -68,7 +68,7 @@ namespace Utils
         
         private static void AddToPreloadedAssets(Object asset)
         {
-            if (asset == null) return;
+            if (!asset || !AssetDatabase.IsMainAsset(asset)) return;
             // add to preloaded assets if not yet
             var preloadedAssets = PlayerSettings.GetPreloadedAssets().ToList();
             if (!preloadedAssets.Contains(asset))
