@@ -8,6 +8,8 @@ namespace Utils
 {
     public class ScriptableObjectSingleton<T> : ScriptableObject where T : ScriptableObjectSingleton<T>
     {
+        private static readonly string[] AssetsPath = { "Assets/" };
+
         private static T _instance;
         public static T Instance
         {
@@ -24,10 +26,28 @@ namespace Utils
             }
         }
         
-        private static bool IsNull => _instance == null;
+        private static bool IsNull
+        {
+            get
+            {
+                var isNull = !_instance;
+                return isNull || !_instance.IsValid();
+            }
+        }
+
+        private bool IsValid()
+        {
+            var isValid = true;
+#if UNITY_EDITOR
+            isValid &= AssetDatabase.IsMainAsset(this);
+#endif
+            return isValid;
+        }
 
         private void OnEnable()
         {
+            if (!IsValid()) return;
+            
             _instance = (T) this;
 #if UNITY_EDITOR
             AddToPreloadedAssets(_instance);
@@ -37,7 +57,10 @@ namespace Utils
 
         private void OnDisable()
         {
-            _instance = null;
+            if (_instance == this)
+            {
+                _instance = null;
+            }
             OnDisableCallback();
         }
         
@@ -48,7 +71,7 @@ namespace Utils
 #if UNITY_EDITOR
         private static T Load()
         {
-            var assets = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+            var assets = AssetDatabase.FindAssets($"t:{typeof(T).Name}", AssetsPath);
             
             if (assets.Length == 0)
             {
