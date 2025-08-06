@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Utils.Editor.EditorGUIUtils
 {
     public static class GUIUtils
     {
+        private static readonly Dictionary<string, Func<SerializedProperty, VisualElement>> EmptyDrawerAdapter = new();
+
         public static float DrawUnityObject(Object obj, bool drawScript = false)
         {
             var so = new SerializedObject(obj);
@@ -41,6 +46,31 @@ namespace Utils.Editor.EditorGUIUtils
             so.ApplyModifiedProperties();
 
             return totalHeight;
+        }
+
+        public static void DrawSerializedProperties(VisualElement container, IEnumerable<SerializedProperty> properties)
+        {
+            DrawSerializedProperties(container, properties, EmptyDrawerAdapter);
+        }
+        
+        public static void DrawSerializedProperties(VisualElement container, IEnumerable<SerializedProperty> properties,
+            Dictionary<string, Func<SerializedProperty, VisualElement>> propertyDrawerAdapters)
+        {
+            foreach (var serializedProperty in properties)
+            {
+                VisualElement propertyField;
+                if (propertyDrawerAdapters.TryGetValue(serializedProperty.name, out var propertyDrawerFactory))
+                {
+                    propertyField = propertyDrawerFactory(serializedProperty);
+                }
+                else
+                {
+                    propertyField = new PropertyField(serializedProperty);
+                    propertyField.AddToClassList("unity-base-field__aligned");  // make widths aligned with other fields in inspector
+                    propertyField.Bind(serializedProperty.serializedObject);  // doesn't work without binding manually in PropertyDrawers
+                }
+                container.Add(propertyField);
+            }
         }
         
         public static float GetHelpBoxHeight()
