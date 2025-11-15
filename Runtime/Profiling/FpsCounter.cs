@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Utils.UI
+namespace Utils.Profiling
 {
     public class FpsCounter : MonoBehaviour
     {
